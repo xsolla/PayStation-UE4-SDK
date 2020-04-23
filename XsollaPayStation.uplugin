@@ -1,0 +1,32 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"EngineVersion": "4.24.0",
+	"FriendlyName": "Xsolla PayStation SDK",
+	"Description": "Xsolla PayStation SDK for Unreal Engine 4",
+	"Category": "Other",
+	"CreatedBy": "Xsolla Inc.",
+	"CreatedByURL": "https://xsolla.com",
+	"DocsURL": "",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/f0f64dfd0d034226ada853f6f3d7c427",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "XsollaPayStation",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+			"WhitelistPlatforms": [
+				"Win32",
+				"Win64",
+				"Mac",
+				"IOS",
+				"Android",
+				"Linux"
+			]
+		}
+	]
+}
