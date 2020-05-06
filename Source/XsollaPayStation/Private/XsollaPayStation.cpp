@@ -2,19 +2,56 @@
 
 #include "XsollaPayStation.h"
 
+#include "XsollaPayStationDefines.h"
+#include "XsollaPayStationSettings.h"
+
+#include "Developer/Settings/Public/ISettingsModule.h"
+
 #define LOCTEXT_NAMESPACE "FXsollaPayStationModule"
 
 void FXsollaPayStationModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	XsollaPayStationSettings = NewObject<UXsollaPayStationSettings>(GetTransientPackage(), "XsollaPayStationSettings", RF_Standalone);
+	XsollaPayStationSettings->AddToRoot();
+
+	// Register settings
+	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
+	{
+		SettingsModule->RegisterSettings("Project", "Plugins", "XsollaPayStation",
+			LOCTEXT("RuntimeSettingsName", "Xsolla PayStation"),
+			LOCTEXT("RuntimeSettingsDescription", "Configure Xsolla PayStation"),
+			XsollaPayStationSettings);
+	}
+
+	UE_LOG(LogXsollaPayStation, Log, TEXT("%s: XsollaPayStation module started"), *VA_FUNC_LINE);
 }
 
 void FXsollaPayStationModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
+	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
+	{
+		SettingsModule->UnregisterSettings("Project", "Plugins", "XsollaPayStation");
+	}
+
+	if (!GExitPurge)
+	{
+		// If we're in exit purge, this object has already been destroyed
+		XsollaPayStationSettings->RemoveFromRoot();
+	}
+	else
+	{
+		XsollaPayStationSettings = nullptr;
+	}
+}
+
+UXsollaPayStationSettings* FXsollaPayStationModule::GetSettings() const
+{
+	check(XsollaPayStationSettings);
+	return XsollaPayStationSettings;
 }
 
 #undef LOCTEXT_NAMESPACE
 
 IMPLEMENT_MODULE(FXsollaPayStationModule, XsollaPayStation)
+
+DEFINE_LOG_CATEGORY(LogXsollaPayStation);
