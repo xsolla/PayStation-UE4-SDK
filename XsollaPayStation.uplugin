@@ -16,6 +16,19 @@
 	"Installed": false,
 	"Modules": [
 		{
+			"Name": "XsollaPayStationBrowser",
+			"Type": "Runtime",
+			"LoadingPhase": "PreDefault",
+			"WhitelistPlatforms": [
+				"Win32",
+				"Win64",
+				"Mac",
+				"IOS",
+				"Android",
+				"Linux"
+			]
+		},
+		{
 			"Name": "XsollaPayStation",
 			"Type": "Runtime",
 			"LoadingPhase": "PreDefault",
