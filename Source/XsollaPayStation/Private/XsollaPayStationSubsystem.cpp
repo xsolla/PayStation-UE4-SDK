@@ -46,14 +46,23 @@ void UXsollaPayStationSubsystem::LaunchPaymentConsole(const FString& PaymentToke
 
 	const UXsollaPayStationSettings* Settings = FXsollaPayStationModule::Get().GetSettings();
 
-	// Check for user browser widget override
-	auto BrowserWidgetClass = (Settings->OverrideBrowserWidgetClass) ? Settings->OverrideBrowserWidgetClass : DefaultBrowserWidgetClass;
+	if (Settings->UsePlatformBrowser)
+	{
+		BrowserWidget = nullptr;
 
-	PengindPayStationUrl = PayStationUrl;
-	auto MyBrowser = CreateWidget<UUserWidget>(GEngine->GameViewport->GetWorld(), BrowserWidgetClass);
-	MyBrowser->AddToViewport(MAX_int32);
+		FPlatformProcess::LaunchURL(*PayStationUrl, nullptr, nullptr);
+	}
+	else
+	{
+		// Check for user browser widget override
+		auto BrowserWidgetClass = (Settings->OverrideBrowserWidgetClass) ? Settings->OverrideBrowserWidgetClass : DefaultBrowserWidgetClass;
 
-	BrowserWidget = MyBrowser;
+		PengindPayStationUrl = PayStationUrl;
+		auto MyBrowser = CreateWidget<UUserWidget>(GEngine->GameViewport->GetWorld(), BrowserWidgetClass);
+		MyBrowser->AddToViewport(MAX_int32);
+
+		BrowserWidget = MyBrowser;
+	}
 }
 
 FString UXsollaPayStationSubsystem::GetPendingPayStationUrl() const

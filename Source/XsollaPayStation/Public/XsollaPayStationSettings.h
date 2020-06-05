@@ -24,4 +24,8 @@ public:
 	/** Custom class to present payment console user interface */
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla PayStation Settings")
 	TSubclassOf<UUserWidget> OverrideBrowserWidgetClass;
+
+	/** Enable to process a payment with an external (system) browser. */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla PayStation Settings")
+	bool UsePlatformBrowser;
 };
