@@ -27,3 +27,9 @@ void UXsollaPayStationLibrary::ParseStoreItemsDataTable(UDataTable* ItemsDataTab
 
 	UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Can't parse items data"), *VA_FUNC_LINE);
 }
+
+FString UXsollaPayStationLibrary::GeneratePurchaseUUID()
+{
+	return FGuid::NewGuid().ToString(EGuidFormats::DigitsWithHyphens).ToLower();
+}
+
