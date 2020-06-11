@@ -12,6 +12,8 @@
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnFetchPaymentTokenSuccess, const FString&, PaymentToken);
 DECLARE_DYNAMIC_DELEGATE_ThreeParams(FOnPayStationError, int32, StatusCode, int32, ErrorCode, const FString&, ErrorMessage);
 
+class UXsollaPayStationImageLoader;
+
 UCLASS()
 class XSOLLAPAYSTATION_API UXsollaPayStationSubsystem : public UGameInstanceSubsystem
 {
@@ -51,4 +53,17 @@ protected:
 private:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> DefaultBrowserWidgetClass;
+
+	UPROPERTY()
+	UXsollaPayStationImageLoader* ImageLoader;
+
+public:
+	/** Async load image from the web
+	 *
+	 * @param URL Address of image to be downloaded.
+	 * @param SuccessCallback Callback function called after successful image download.
+	 * @param ErrorCallback Callback function called after request resulted with an error.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|Store", meta = (AutoCreateRefTerm = "ErrorCallback"))
+	void LoadImageFromWeb(const FString& URL, const FOnImageLoaded& SuccessCallback, const FOnImageLoadFailed& ErrorCallback);
 };

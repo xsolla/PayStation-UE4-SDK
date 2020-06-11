@@ -5,6 +5,7 @@
 #include "XsollaPayStation.h"
 #include "XsollaPayStationDefines.h"
 #include "XsollaPayStationSettings.h"
+#include "XsollaPayStationImageLoader.h"
 
 #include "Engine/Engine.h"
 #include "Modules/ModuleManager.h"
@@ -27,6 +28,12 @@ UXsollaPayStationSubsystem::UXsollaPayStationSubsystem()
 void UXsollaPayStationSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
+	// Check whether image loader exists, because initialization can be called multiple times
+	if (!ImageLoader)
+	{
+		ImageLoader = NewObject<UXsollaPayStationImageLoader>();
+	}
 
 	UE_LOG(LogXsollaPayStation, Log, TEXT("%s: XsollaPayStation subsystem initialized"), *VA_FUNC_LINE);
 }
@@ -105,6 +112,11 @@ TSharedRef<IHttpRequest> UXsollaPayStationSubsystem::CreateHttpRequest(const FSt
 	HttpRequest->SetHeader(TEXT("X-SDK-V"), XSOLLA_PAYSTATION_VERSION);
 
 	return HttpRequest;
+}
+
+void UXsollaPayStationSubsystem::LoadImageFromWeb(const FString& URL, const FOnImageLoaded& SuccessCallback, const FOnImageLoadFailed& ErrorCallback)
+{
+	ImageLoader->LoadImage(URL, SuccessCallback, ErrorCallback);
 }
 
 #undef LOCTEXT_NAMESPACE

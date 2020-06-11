@@ -14,6 +14,7 @@ public class XsollaPayStation : ModuleRules
 				"Core",
 				"HTTP",
 				"Json",
+				"JsonUtilities",
 				"UMG",
 				"XsollaPayStationBrowser"
 				// ... add other public dependencies that you statically link with here ...
