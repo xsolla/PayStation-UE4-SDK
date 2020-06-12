@@ -1,4 +1,4 @@
-// Copyright 2020 Xsolla Inc. All Rights Reserved.
+﻿// Copyright 2020 Xsolla Inc. All Rights Reserved.
 
 #include "XsollaPayStationSubsystem.h"
 
@@ -34,6 +34,10 @@ void UXsollaPayStationSubsystem::Initialize(FSubsystemCollectionBase& Collection
 	{
 		ImageLoader = NewObject<UXsollaPayStationImageLoader>();
 	}
+
+	const UXsollaPayStationSettings* Settings = FXsollaPayStationModule::Get().GetSettings();
+
+	ProjectID = Settings->ProjectID;
 
 	UE_LOG(LogXsollaPayStation, Log, TEXT("%s: XsollaPayStation subsystem initialized"), *VA_FUNC_LINE);
 }
@@ -77,6 +81,16 @@ FString UXsollaPayStationSubsystem::GetPendingPayStationUrl() const
 	return PengindPayStationUrl;
 }
 
+void UXsollaPayStationSubsystem::CheckPurchaseStatus(const FString& PurchaseUUID, const FOnCheckPurchaseStatusSuccess& SuccessCallback, const FOnPayStationError& ErrorCallback) const
+{
+	const FString Url = FString::Printf(TEXT("https://api.xsolla.com/merchant/projects/%s/transactions/external/%s/status"), *ProjectID, *PurchaseUUID);
+
+	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(Url);
+	HttpRequest->SetVerb(TEXT("GET"));
+	HttpRequest->OnProcessRequestComplete().BindUObject(this, &UXsollaPayStationSubsystem::CheckPurchaseStatus_HttpRequestComplete, SuccessCallback, ErrorCallback);
+	HttpRequest->ProcessRequest();
+}
+
 bool UXsollaPayStationSubsystem::IsSandboxEnabled() const
 {
 	const UXsollaPayStationSettings* Settings = FXsollaPayStationModule::Get().GetSettings();
@@ -93,7 +107,88 @@ bool UXsollaPayStationSubsystem::IsSandboxEnabled() const
 	return bIsSandboxEnabled;
 }
 
-TSharedRef<IHttpRequest> UXsollaPayStationSubsystem::CreateHttpRequest(const FString& Url)
+void UXsollaPayStationSubsystem::CheckPurchaseStatus_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnCheckPurchaseStatusSuccess SuccessCallback, FOnPayStationError ErrorCallback)
+{
+	if (HandlePurchaseStatusError(HttpRequest, HttpResponse, bSucceeded, ErrorCallback))
+	{
+		return;
+	}
+
+	FString ResponseStr = HttpResponse->GetContentAsString();
+	UE_LOG(LogXsollaPayStation, Verbose, TEXT("%s: Response: %s"), *VA_FUNC_LINE, *ResponseStr);
+
+	TSharedPtr<FJsonObject> JsonObject;
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(*HttpResponse->GetContentAsString());
+	if (!FJsonSerializer::Deserialize(Reader, JsonObject))
+	{
+		UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Can't deserialize server response"), *VA_FUNC_LINE);
+		ErrorCallback.ExecuteIfBound(HttpResponse->GetResponseCode(), TEXT("Can't deserialize server response"));
+		return;
+	}
+
+	FXsollaPayStationPurchaseStatus purchaseStatus;
+	if (!FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), FXsollaPayStationPurchaseStatus::StaticStruct(), &purchaseStatus))
+	{
+		UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Can't convert server response to struct"), *VA_FUNC_LINE);
+		ErrorCallback.ExecuteIfBound(HttpResponse->GetResponseCode(), TEXT("Can't convert server response to struct"));
+		return;
+	}
+
+	SuccessCallback.ExecuteIfBound(purchaseStatus);
+}
+
+bool UXsollaPayStationSubsystem::HandlePurchaseStatusError(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnPayStationError ErrorCallback)
+{
+	int32 StatusCode = 0;
+	FString ErrorStr;
+	FString ResponseStr = TEXT("Invalid");
+
+	if (bSucceeded && HttpResponse.IsValid())
+	{
+		ResponseStr = HttpResponse->GetContentAsString();
+
+		if (!EHttpResponseCodes::IsOk(HttpResponse->GetResponseCode()))
+		{
+			StatusCode = HttpResponse->GetResponseCode();
+			ErrorStr = FString::Printf(TEXT("Invalid response. Сode=%d, Error=%s"), HttpResponse->GetResponseCode(), *ResponseStr);
+
+			TSharedPtr<FJsonObject> JsonObject;
+			TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(*ResponseStr);
+			if (FJsonSerializer::Deserialize(Reader, JsonObject))
+			{
+				static const FString StatucCodeFieldName = TEXT("http_status_code");
+				if (JsonObject->HasTypedField<EJson::Number>(StatucCodeFieldName))
+				{
+					StatusCode = JsonObject->GetNumberField(StatucCodeFieldName);
+					ErrorStr = JsonObject->GetStringField(TEXT("message"));
+				}
+				else
+				{
+					ErrorStr = FString::Printf(TEXT("Can't deserialize error json: no field '%s' found"), *StatucCodeFieldName);
+				}
+			}
+			else
+			{
+				ErrorStr = TEXT("Can't deserialize error json");
+			}
+		}
+	}
+	else
+	{
+		ErrorStr = TEXT("No response");
+	}
+
+	if (!ErrorStr.IsEmpty())
+	{
+		UE_LOG(LogXsollaPayStation, Warning, TEXT("%s: request failed (%s): %s"), *VA_FUNC_LINE, *ErrorStr, *ResponseStr);
+		ErrorCallback.ExecuteIfBound(StatusCode, ErrorStr);
+		return true;
+	}
+
+	return false;
+}
+
+TSharedRef<IHttpRequest> UXsollaPayStationSubsystem::CreateHttpRequest(const FString& Url) const
 {
 	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
 
@@ -102,8 +197,6 @@ TSharedRef<IHttpRequest> UXsollaPayStationSubsystem::CreateHttpRequest(const FSt
 		ENGINE_VERSION_STRING,
 		XSOLLA_PAYSTATION_VERSION);
 	HttpRequest->SetURL(Url + MetaUrl);
-
-	HttpRequest->SetVerb(TEXT("POST"));
 
 	// Xsolla meta
 	HttpRequest->SetHeader(TEXT("X-ENGINE"), TEXT("UE4"));

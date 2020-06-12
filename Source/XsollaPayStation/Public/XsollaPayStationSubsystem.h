@@ -9,8 +9,8 @@
 
 #include "XsollaPayStationSubsystem.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FOnFetchPaymentTokenSuccess, const FString&, PaymentToken);
-DECLARE_DYNAMIC_DELEGATE_ThreeParams(FOnPayStationError, int32, StatusCode, int32, ErrorCode, const FString&, ErrorMessage);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnCheckPurchaseStatusSuccess, FXsollaPayStationPurchaseStatus, PurchaseStatus);
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FOnPayStationError, int32, StatusCode, const FString&, ErrorMessage);
 
 class UXsollaPayStationImageLoader;
 
@@ -28,27 +28,39 @@ public:
 	// End USubsystem
 
 	/** Open payment console for provided token */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation")
 	void LaunchPaymentConsole(const FString& PaymentToken, UUserWidget*& BrowserWidget);
 
 	/** Get pending PayStation URL to be opened in browser */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation")
 	FString GetPendingPayStationUrl() const;
 
+	/** Check purchase status by its UUID */
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
+	void CheckPurchaseStatus(const FString& PurchaseUUID, const FOnCheckPurchaseStatusSuccess& SuccessCallback, const FOnPayStationError& ErrorCallback) const;
+
 protected:
 	/** Check whether sandbox is enabled */
 	bool IsSandboxEnabled() const;
 
+	void CheckPurchaseStatus_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnCheckPurchaseStatusSuccess SuccessCallback, FOnPayStationError ErrorCallback);
+
+	/** Return true if error is happened */
+	bool HandlePurchaseStatusError(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnPayStationError ErrorCallback);
+
 private:
 	/** Create HTTP request and add Xsolla API meta */
-	TSharedRef<IHttpRequest> CreateHttpRequest(const FString& Url);
+	TSharedRef<IHttpRequest> CreateHttpRequest(const FString& Url) const;
 
 protected:
-	/** Pending paystation URL to be opened in browser */
+	/** Pending PayStation URL to be opened in browser */
 	FString PengindPayStationUrl;
 
 	static const FString PaymentEndpoint;
 	static const FString SandboxPaymentEndpoint;
+
+	/** Cached Xsolla PayStation Project ID */
+	FString ProjectID;
 
 private:
 	UPROPERTY()
