@@ -1,4 +1,4 @@
-// Copyright 2020 Xsolla Inc. All Rights Reserved.
+﻿// Copyright 2020 Xsolla Inc. All Rights Reserved.
 
 #pragma once
 
@@ -58,7 +58,7 @@ struct XSOLLAPAYSTATION_API FXsollaPayStationItem
 	FXsollaPayStationPrice price;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
-	FXsollaPayStationVirtualCurrencyPackage bundleContent;
+	FXsollaPayStationVirtualCurrencyPackage bundle_content;
 };
 
 USTRUCT(BlueprintType)

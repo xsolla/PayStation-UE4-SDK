@@ -1,4 +1,4 @@
-// Copyright 2020 Xsolla Inc. All Rights Reserved.
+﻿// Copyright 2020 Xsolla Inc. All Rights Reserved.
 
 #pragma once
 
@@ -60,5 +60,5 @@ struct XSOLLAPAYSTATION_API FXsollaItemFormat : public FTableRowBase
 	FXsollaItemPriceFormat price;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla Formats")
-	FXsollaVirtualCurrencyPackageFormat bundleContent;
+	FXsollaVirtualCurrencyPackageFormat bundle_content;
 };
