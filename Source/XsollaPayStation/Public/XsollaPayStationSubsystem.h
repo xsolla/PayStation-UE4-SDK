@@ -31,13 +31,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation")
 	void LaunchPaymentConsole(const FString& PaymentToken, UUserWidget*& BrowserWidget);
 
+	/** Open payment console for provided token */
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation")
+	void LaunchPaymentConsoleWithAccessData(const TArray<FXsollaPayStationItemToPurchase>& ItemsToPurchase, const FString& PurchaseUUID, UUserWidget*& BrowserWidget);
+
 	/** Get pending PayStation URL to be opened in browser */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation")
 	FString GetPendingPayStationUrl() const;
 
 	/** Check purchase status by its UUID */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
-	void CheckPurchaseStatus(const FString& PurchaseUUID, const FOnCheckPurchaseStatusSuccess& SuccessCallback, const FOnPayStationError& ErrorCallback) const;
+	void CheckPurchaseStatus(const FString& PurchaseUUID, const FOnCheckPurchaseStatusSuccess& SuccessCallback, const FOnPayStationError& ErrorCallback);
 
 protected:
 	/** Check whether sandbox is enabled */
