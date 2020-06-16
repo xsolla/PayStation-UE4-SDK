@@ -93,8 +93,28 @@ void UXsollaPayStationSubsystem::LaunchPaymentConsoleWithAccessData(const TArray
 	AccessDataJson->SetObjectField(TEXT("user"), UserJson);
 
 	// Fill PayStation settings
+	FString theme;
+
+	switch (Settings->PaymentInterfaceTheme)
+	{
+	case EXsollaPayStationUiTheme::Default:
+		theme = TEXT("default");
+		break;
+
+	case EXsollaPayStationUiTheme::DefaultDark:
+		theme = TEXT("default_dark");
+		break;
+
+	case EXsollaPayStationUiTheme::Dark:
+		theme = TEXT("dark");
+		break;
+
+	default:
+		theme = TEXT("dark");
+	}
+
 	TSharedPtr<FJsonObject> PaymentUiSettingsJson = MakeShareable(new FJsonObject);
-	PaymentUiSettingsJson->SetStringField(TEXT("theme"), TEXT("default_dark"));
+	PaymentUiSettingsJson->SetStringField(TEXT("theme"), theme);
 
 	TSharedPtr<FJsonObject> PaymentSettingsJson = MakeShareable(new FJsonObject);
 	PaymentSettingsJson->SetObjectField(TEXT("ui"), PaymentUiSettingsJson);

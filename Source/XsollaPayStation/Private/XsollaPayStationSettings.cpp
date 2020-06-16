@@ -8,4 +8,5 @@ UXsollaPayStationSettings::UXsollaPayStationSettings(const FObjectInitializer& O
 	bSandbox = true;
 	bEnableSandboxInShipping = false;
 	UsePlatformBrowser = false;
+	PaymentInterfaceTheme = EXsollaPayStationUiTheme::Dark;
 }

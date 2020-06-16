@@ -6,6 +6,15 @@
 
 #include "XsollaPayStationSettings.generated.h"
 
+/** User interface theme for payment interface*/
+UENUM(BlueprintType)
+enum class EXsollaPayStationUiTheme : uint8
+{
+	Default,
+	DefaultDark,
+	Dark
+};
+
 UCLASS(config = Engine, defaultconfig)
 class XSOLLAPAYSTATION_API UXsollaPayStationSettings : public UObject
 {
@@ -28,6 +37,10 @@ public:
 	/** Enable to process a payment with an external (system) browser. */
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla PayStation Settings")
 	bool UsePlatformBrowser;
+
+	/** Payment user interface theme. */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla PayStation Settings")
+	EXsollaPayStationUiTheme PaymentInterfaceTheme;
 
 	/** Project ID from your Publisher Account. Required if simplified integration flow is preferred. */
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla PayStation Settings | Simplified integration")
