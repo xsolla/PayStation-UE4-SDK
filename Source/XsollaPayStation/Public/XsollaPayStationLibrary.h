@@ -21,10 +21,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Xsolla | PayStation")
 	static UXsollaPayStationSettings* GetPayStationSettings();
 
-	/** Parse data table with store items data */
-	UFUNCTION(BlueprintPure, Category = "Xsolla | PayStation")
-	static void ParseStoreItemsDataTable(UDataTable* ItemsDataTable, TArray<FXsollaPayStationItem>& StoreItems);
-
 	/** Generate unique purchase identifier */
 	UFUNCTION(BlueprintPure, Category = "Xsolla | PayStation")
 	static FString GeneratePurchaseUUID();

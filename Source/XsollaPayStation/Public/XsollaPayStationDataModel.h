@@ -9,10 +9,10 @@ struct XSOLLAPAYSTATION_API FXsollaPayStationPrice
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	FString currency;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	float amount;
 
 	FXsollaPayStationPrice()
@@ -24,10 +24,10 @@ struct XSOLLAPAYSTATION_API FXsollaPayStationVirtualCurrencyPackage
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	FString currency;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	float quantity;
 
 	FXsollaPayStationVirtualCurrencyPackage()
@@ -39,25 +39,25 @@ struct XSOLLAPAYSTATION_API FXsollaPayStationItem
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	FString sku;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	FString type;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	FString display_name;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	FString description;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	FString image_url;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	FXsollaPayStationPrice price;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Xsolla PayStation Item")
+	UPROPERTY(BlueprintReadWrite, Category = "Xsolla PayStation Item")
 	FXsollaPayStationVirtualCurrencyPackage bundle_content;
 };
 
