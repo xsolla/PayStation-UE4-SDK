@@ -14,7 +14,7 @@ UXsollaPayStationSettings* UXsollaPayStationLibrary::GetPayStationSettings()
 
 void UXsollaPayStationLibrary::ParseStoreItemsDataTable(UDataTable* ItemsDataTable, TArray<FXsollaPayStationItem>& StoreItems)
 {
-	FString itemsDataJson = ItemsDataTable->GetTableAsJSON();
+	FString itemsDataJson = ItemsDataTable->GetTableAsJSON(EDataTableExportFlags::None);
 
 	UE_LOG(LogXsollaPayStation, Verbose, TEXT("%s: Preparing to parse store items data JSON: %s"), *VA_FUNC_LINE, *itemsDataJson);
 
