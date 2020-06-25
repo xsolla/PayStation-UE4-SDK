@@ -7,7 +7,7 @@
 #include "XsollaPayStationItemFormat.generated.h"
 
 USTRUCT(Blueprintable)
-struct XSOLLAPAYSTATION_API FXsollaItemPriceFormat
+struct XSOLLAPAYSTATION_API FXsollaItemPrice
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -17,12 +17,12 @@ struct XSOLLAPAYSTATION_API FXsollaItemPriceFormat
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla Formats")
 	float amount;
 
-	FXsollaItemPriceFormat()
+	FXsollaItemPrice()
 		: amount(0.0f) {};
 };
 
 USTRUCT(Blueprintable)
-struct XSOLLAPAYSTATION_API FXsollaVirtualCurrencyPackageFormat
+struct XSOLLAPAYSTATION_API FXsollaVirtualCurrencyPackage
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -32,12 +32,12 @@ struct XSOLLAPAYSTATION_API FXsollaVirtualCurrencyPackageFormat
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla Formats")
 	float quantity;
 
-	FXsollaVirtualCurrencyPackageFormat()
+	FXsollaVirtualCurrencyPackage()
 		: quantity(0.0f) {};
 };
 
 USTRUCT(Blueprintable)
-struct XSOLLAPAYSTATION_API FXsollaItemFormat : public FTableRowBase
+struct XSOLLAPAYSTATION_API FXsollaCatalogItem : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -57,8 +57,8 @@ struct XSOLLAPAYSTATION_API FXsollaItemFormat : public FTableRowBase
 	FString image_url;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla Formats")
-	FXsollaItemPriceFormat price;
+	FXsollaItemPrice price;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla Formats")
-	FXsollaVirtualCurrencyPackageFormat bundle_content;
+	FXsollaVirtualCurrencyPackage bundle_content;
 };
