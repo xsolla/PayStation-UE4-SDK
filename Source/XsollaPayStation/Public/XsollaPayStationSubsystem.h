@@ -6,6 +6,7 @@
 #include "Http.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Subsystems/SubsystemCollection.h"
+#include "XsollaPayStationDataModel.h"
 
 #include "XsollaPayStationSubsystem.generated.h"
 
@@ -33,7 +34,7 @@ public:
 
 	/** Open payment console for provided token */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation")
-	void LaunchPaymentConsoleWithAccessData(const TArray<FXsollaPayStationItemToPurchase>& ItemsToPurchase, const FString& PurchaseUUID, UUserWidget*& BrowserWidget);
+	void LaunchPaymentConsoleWithAccessData(FXsollaPaymentsAccessData accessData, UUserWidget*& BrowserWidget);
 
 	/** Get pending PayStation URL to be opened in browser */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation")
@@ -64,7 +65,7 @@ protected:
 	static const FString SandboxPaymentEndpoint;
 
 	/** Cached Xsolla PayStation Project ID */
-	FString ProjectID;
+	int32 ProjectID;
 
 private:
 	UPROPERTY()

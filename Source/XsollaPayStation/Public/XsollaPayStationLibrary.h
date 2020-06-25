@@ -3,12 +3,12 @@
 #pragma once
 
 #include "XsollaPayStationDataModel.h"
+#include "XsollaPayStationSettings.h"
 
 #include "Kismet/BlueprintFunctionLibrary.h"
 
 #include "XsollaPayStationLibrary.generated.h"
 
-class UXsollaPayStationSettings;
 class UDataTable;
 
 UCLASS()
@@ -24,4 +24,8 @@ public:
 	/** Generate unique purchase identifier */
 	UFUNCTION(BlueprintPure, Category = "Xsolla | PayStation")
 	static FString GeneratePurchaseUUID();
+
+	/** Convert Payments UI theme to acceptable string format */
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "PaymentsUiTheme To String", CompactNodeTitle = "->", BlueprintAutocast), Category = "Xsolla | PayStation")
+	static FString Conv_XsollaPayStationUiThemeToString(EXsollaPayStationUiTheme theme);
 };

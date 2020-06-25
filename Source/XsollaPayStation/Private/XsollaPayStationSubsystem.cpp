@@ -76,81 +76,14 @@ void UXsollaPayStationSubsystem::LaunchPaymentConsole(const FString& PaymentToke
 	}
 }
 
-void UXsollaPayStationSubsystem::LaunchPaymentConsoleWithAccessData(const TArray<FXsollaPayStationItemToPurchase>& ItemsToPurchase, const FString& PurchaseUUID, UUserWidget*& BrowserWidget)
+void UXsollaPayStationSubsystem::LaunchPaymentConsoleWithAccessData(FXsollaPaymentsAccessData accessData, UUserWidget*& BrowserWidget)
 {
-	const UXsollaPayStationSettings* Settings = FXsollaPayStationModule::Get().GetSettings();
-
 	// Prepare access data for PayStation
-	TSharedPtr<FJsonObject> AccessDataJson = MakeShareable(new FJsonObject);
-
-	// Fill user data
-	TSharedPtr<FJsonObject> UserIdJson = MakeShareable(new FJsonObject);
-	UserIdJson->SetStringField(TEXT("value"), Settings->ProjectID);
-
-	TSharedPtr<FJsonObject> UserJson = MakeShareable(new FJsonObject);
-	UserJson->SetObjectField(TEXT("id"), UserIdJson);
-
-	AccessDataJson->SetObjectField(TEXT("user"), UserJson);
-
-	// Fill PayStation settings
-	FString theme;
-
-	switch (Settings->PaymentInterfaceTheme)
-	{
-	case EXsollaPayStationUiTheme::Default:
-		theme = TEXT("default");
-		break;
-
-	case EXsollaPayStationUiTheme::DefaultDark:
-		theme = TEXT("default_dark");
-		break;
-
-	case EXsollaPayStationUiTheme::Dark:
-		theme = TEXT("dark");
-		break;
-
-	default:
-		theme = TEXT("dark");
-	}
-
-	TSharedPtr<FJsonObject> PaymentUiSettingsJson = MakeShareable(new FJsonObject);
-	PaymentUiSettingsJson->SetStringField(TEXT("theme"), theme);
-
-	TSharedPtr<FJsonObject> PaymentSettingsJson = MakeShareable(new FJsonObject);
-	PaymentSettingsJson->SetObjectField(TEXT("ui"), PaymentUiSettingsJson);
-	PaymentSettingsJson->SetStringField(TEXT("external_id"), PurchaseUUID);
-	PaymentSettingsJson->SetNumberField(TEXT("project_id"), FCString::Atoi(*ProjectID));
-
-	if (IsSandboxEnabled())
-	{
-		PaymentSettingsJson->SetStringField(TEXT("mode"), TEXT("sandbox"));
-	}
-
-	AccessDataJson->SetObjectField(TEXT("settings"), PaymentSettingsJson);
-
-	// Fill purchase data
-	TArray<TSharedPtr<FJsonValue>> VirtualItemsJsonArray;
-	for (auto Item : ItemsToPurchase)
-	{
-		TSharedRef<FJsonObject> ItemJson = MakeShareable(new FJsonObject());
-		if (FJsonObjectConverter::UStructToJsonObject(FXsollaPayStationItemToPurchase::StaticStruct(), &Item, ItemJson, 0, 0))
-		{
-			VirtualItemsJsonArray.Push(MakeShareable(new FJsonValueObject(ItemJson)));
-		}
-	}
-
-	TSharedPtr<FJsonObject> VirtualItemsJson = MakeShareable(new FJsonObject);
-	VirtualItemsJson->SetArrayField(TEXT("items"), VirtualItemsJsonArray);
-
-	TSharedPtr<FJsonObject> PurchaseJson = MakeShareable(new FJsonObject);
-	PurchaseJson->SetObjectField(TEXT("virtual_items"), VirtualItemsJson);
-
-	AccessDataJson->SetObjectField(TEXT("purchase"), PurchaseJson);
-
-	// Convert access data to string
 	FString accessDataStr;
-	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&accessDataStr);
-	FJsonSerializer::Serialize(AccessDataJson.ToSharedRef(), Writer);
+	if (!FJsonObjectConverter::UStructToJsonObjectString(accessData, accessDataStr))
+	{
+		UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Failed to parse payment acces data"), *VA_FUNC_LINE);
+	}
 
 	// Minify access data json
 	accessDataStr = accessDataStr.Replace(TEXT("\n"), TEXT("")).Replace(TEXT(" "), TEXT(""));
@@ -160,6 +93,8 @@ void UXsollaPayStationSubsystem::LaunchPaymentConsoleWithAccessData(const TArray
 	const FString PayStationUrl = FString::Printf(TEXT("%s?access_data=%s"), *Endpoint, *FGenericPlatformHttp::UrlEncode(accessDataStr));
 
 	UE_LOG(LogXsollaPayStation, Log, TEXT("%s: Loading PayStation: %s"), *VA_FUNC_LINE, *PayStationUrl);
+
+	const UXsollaPayStationSettings* Settings = FXsollaPayStationModule::Get().GetSettings();
 
 	if (Settings->UsePlatformBrowser)
 	{
@@ -187,7 +122,7 @@ FString UXsollaPayStationSubsystem::GetPendingPayStationUrl() const
 
 void UXsollaPayStationSubsystem::CheckPurchaseStatus(const FString& PurchaseUUID, const FOnCheckPurchaseStatusSuccess& SuccessCallback, const FOnPayStationError& ErrorCallback)
 {
-	const FString Url = FString::Printf(TEXT("https://api.xsolla.com/merchant/projects/%s/transactions/external/%s/status"), *ProjectID, *PurchaseUUID);
+	const FString Url = FString::Printf(TEXT("https://api.xsolla.com/merchant/projects/%d/transactions/external/%s/status"), ProjectID, *PurchaseUUID);
 
 	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(Url);
 	HttpRequest->SetVerb(TEXT("GET"));

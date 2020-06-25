@@ -9,4 +9,5 @@ UXsollaPayStationSettings::UXsollaPayStationSettings(const FObjectInitializer& O
 	bEnableSandboxInShipping = false;
 	UsePlatformBrowser = false;
 	PaymentInterfaceTheme = EXsollaPayStationUiTheme::Dark;
+	ProjectID = 68789;
 }
