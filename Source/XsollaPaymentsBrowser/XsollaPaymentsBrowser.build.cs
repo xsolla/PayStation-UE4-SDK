@@ -2,9 +2,9 @@
 
 namespace UnrealBuildTool.Rules
 {
-    public class XsollaPayStationBrowser : ModuleRules
+    public class XsollaPaymentsBrowser : ModuleRules
     {
-        public XsollaPayStationBrowser(ReadOnlyTargetRules Target) : base(Target)
+        public XsollaPaymentsBrowser(ReadOnlyTargetRules Target) : base(Target)
         {
             PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 

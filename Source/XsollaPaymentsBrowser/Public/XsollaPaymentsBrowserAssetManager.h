@@ -5,12 +5,12 @@
 #include "Materials/Material.h"
 #include "UObject/SoftObjectPtr.h"
 
-#include "XsollaPayStationBrowserAssetManager.generated.h"
+#include "XsollaPaymentsBrowserAssetManager.generated.h"
 
 class UMaterial;
 
 UCLASS()
-class XSOLLAPAYSTATIONBROWSER_API UXsollaPayStationBrowserAssetManager : public UObject
+class XSOLLAPAYMENTSBROWSER_API UXsollaPaymentsBrowserAssetManager : public UObject
 {
 	GENERATED_UCLASS_BODY()
 

@@ -1,11 +1,11 @@
 ﻿// Copyright 2020 Xsolla Inc. All Rights Reserved.
 
-#include "XsollaPayStationSubsystem.h"
+#include "XsollaPaymentsSubsystem.h"
 
-#include "XsollaPayStation.h"
-#include "XsollaPayStationDefines.h"
-#include "XsollaPayStationSettings.h"
-#include "XsollaPayStationImageLoader.h"
+#include "XsollaPayments.h"
+#include "XsollaPaymentsDefines.h"
+#include "XsollaPaymentsSettings.h"
+#include "XsollaPaymentsImageLoader.h"
 
 #include "Engine/Engine.h"
 #include "Modules/ModuleManager.h"
@@ -13,62 +13,62 @@
 #include "UObject/ConstructorHelpers.h"
 #include "UObject/Package.h"
 
-#define LOCTEXT_NAMESPACE "FXsollaPayStationModule"
+#define LOCTEXT_NAMESPACE "FXsollaPaymentsModule"
 
-const FString UXsollaPayStationSubsystem::PaymentEndpoint(TEXT("https://secure.xsolla.com/paystation3"));
-const FString UXsollaPayStationSubsystem::SandboxPaymentEndpoint(TEXT("https://sandbox-secure.xsolla.com/paystation3"));
+const FString UXsollaPaymentsSubsystem::PaymentEndpoint(TEXT("https://secure.xsolla.com/paystation3"));
+const FString UXsollaPaymentsSubsystem::SandboxPaymentEndpoint(TEXT("https://sandbox-secure.xsolla.com/paystation3"));
 
-UXsollaPayStationSubsystem::UXsollaPayStationSubsystem()
+UXsollaPaymentsSubsystem::UXsollaPaymentsSubsystem()
 	: UGameInstanceSubsystem()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> BrowserWidgetFinder(TEXT("/XsollaPayStation/Browser/W_PayStationBrowser.W_PayStationBrowser_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> BrowserWidgetFinder(TEXT("/XsollaPayments/Browser/W_PaymentsBrowser.W_PaymentsBrowser_C"));
 	DefaultBrowserWidgetClass = BrowserWidgetFinder.Class;
 }
 
-void UXsollaPayStationSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+void UXsollaPaymentsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
 	// Check whether image loader exists, because initialization can be called multiple times
 	if (!ImageLoader)
 	{
-		ImageLoader = NewObject<UXsollaPayStationImageLoader>();
+		ImageLoader = NewObject<UXsollaPaymentsImageLoader>();
 	}
 
-	const UXsollaPayStationSettings* Settings = FXsollaPayStationModule::Get().GetSettings();
+	const UXsollaPaymentsSettings* Settings = FXsollaPaymentsModule::Get().GetSettings();
 
 	ProjectID = Settings->ProjectID;
 
-	UE_LOG(LogXsollaPayStation, Log, TEXT("%s: XsollaPayStation subsystem initialized"), *VA_FUNC_LINE);
+	UE_LOG(LogXsollaPayments, Log, TEXT("%s: XsollaPayments subsystem initialized"), *VA_FUNC_LINE);
 }
 
-void UXsollaPayStationSubsystem::Deinitialize()
+void UXsollaPaymentsSubsystem::Deinitialize()
 {
 	// Do nothing for now
 	Super::Deinitialize();
 }
 
-void UXsollaPayStationSubsystem::LaunchPaymentConsole(const FString& PaymentToken, UUserWidget*& BrowserWidget)
+void UXsollaPaymentsSubsystem::LaunchPaymentConsole(const FString& PaymentToken, UUserWidget*& BrowserWidget)
 {
 	const FString Endpoint = IsSandboxEnabled() ? SandboxPaymentEndpoint : PaymentEndpoint;
-	const FString PayStationUrl = FString::Printf(TEXT("%s?access_token=%s"), *Endpoint, *PaymentToken);
+	const FString PaymentsUrl = FString::Printf(TEXT("%s?access_token=%s"), *Endpoint, *PaymentToken);
 
-	UE_LOG(LogXsollaPayStation, Log, TEXT("%s: Loading PayStation: %s"), *VA_FUNC_LINE, *PayStationUrl);
+	UE_LOG(LogXsollaPayments, Log, TEXT("%s: Loading Payments: %s"), *VA_FUNC_LINE, *PaymentsUrl);
 
-	const UXsollaPayStationSettings* Settings = FXsollaPayStationModule::Get().GetSettings();
+	const UXsollaPaymentsSettings* Settings = FXsollaPaymentsModule::Get().GetSettings();
 
 	if (Settings->UsePlatformBrowser)
 	{
 		BrowserWidget = nullptr;
 
-		FPlatformProcess::LaunchURL(*PayStationUrl, nullptr, nullptr);
+		FPlatformProcess::LaunchURL(*PaymentsUrl, nullptr, nullptr);
 	}
 	else
 	{
 		// Check for user browser widget override
 		auto BrowserWidgetClass = (Settings->OverrideBrowserWidgetClass) ? Settings->OverrideBrowserWidgetClass : DefaultBrowserWidgetClass;
 
-		PengindPayStationUrl = PayStationUrl;
+		PengindPaymentsUrl = PaymentsUrl;
 		auto MyBrowser = CreateWidget<UUserWidget>(GEngine->GameViewport->GetWorld(), BrowserWidgetClass);
 		MyBrowser->AddToViewport(MAX_int32);
 
@@ -76,38 +76,37 @@ void UXsollaPayStationSubsystem::LaunchPaymentConsole(const FString& PaymentToke
 	}
 }
 
-void UXsollaPayStationSubsystem::LaunchPaymentConsoleWithAccessData(FXsollaPaymentsAccessData accessData, UUserWidget*& BrowserWidget)
+void UXsollaPaymentsSubsystem::LaunchPaymentConsoleWithAccessData(FXsollaPaymentsAccessData accessData, UUserWidget*& BrowserWidget)
 {
-	// Prepare access data for PayStation
+	// Prepare access data for payment
 	FString accessDataStr;
 	if (!FJsonObjectConverter::UStructToJsonObjectString(accessData, accessDataStr))
 	{
-		UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Failed to parse payment acces data"), *VA_FUNC_LINE);
+		UE_LOG(LogXsollaPayments, Error, TEXT("%s: Failed to parse payment acces data"), *VA_FUNC_LINE);
 	}
 
 	// Minify access data json
 	accessDataStr = accessDataStr.Replace(TEXT("\n"), TEXT("")).Replace(TEXT(" "), TEXT(""));
 
-	// Launch PayStation
 	const FString Endpoint = IsSandboxEnabled() ? SandboxPaymentEndpoint : PaymentEndpoint;
-	const FString PayStationUrl = FString::Printf(TEXT("%s?access_data=%s"), *Endpoint, *FGenericPlatformHttp::UrlEncode(accessDataStr));
+	const FString PaymentsUrl = FString::Printf(TEXT("%s?access_data=%s"), *Endpoint, *FGenericPlatformHttp::UrlEncode(accessDataStr));
 
-	UE_LOG(LogXsollaPayStation, Log, TEXT("%s: Loading PayStation: %s"), *VA_FUNC_LINE, *PayStationUrl);
+	UE_LOG(LogXsollaPayments, Log, TEXT("%s: Loading Payments: %s"), *VA_FUNC_LINE, *PaymentsUrl);
 
-	const UXsollaPayStationSettings* Settings = FXsollaPayStationModule::Get().GetSettings();
+	const UXsollaPaymentsSettings* Settings = FXsollaPaymentsModule::Get().GetSettings();
 
 	if (Settings->UsePlatformBrowser)
 	{
 		BrowserWidget = nullptr;
 
-		FPlatformProcess::LaunchURL(*PayStationUrl, nullptr, nullptr);
+		FPlatformProcess::LaunchURL(*PaymentsUrl, nullptr, nullptr);
 	}
 	else
 	{
 		// Check for user browser widget override
 		auto BrowserWidgetClass = (Settings->OverrideBrowserWidgetClass) ? Settings->OverrideBrowserWidgetClass : DefaultBrowserWidgetClass;
 
-		PengindPayStationUrl = PayStationUrl;
+		PengindPaymentsUrl = PaymentsUrl;
 		auto MyBrowser = CreateWidget<UUserWidget>(GEngine->GameViewport->GetWorld(), BrowserWidgetClass);
 		MyBrowser->AddToViewport(MAX_int32);
 
@@ -115,38 +114,38 @@ void UXsollaPayStationSubsystem::LaunchPaymentConsoleWithAccessData(FXsollaPayme
 	}
 }
 
-FString UXsollaPayStationSubsystem::GetPendingPayStationUrl() const
+FString UXsollaPaymentsSubsystem::GetPendingPaymentsUrl() const
 {
-	return PengindPayStationUrl;
+	return PengindPaymentsUrl;
 }
 
-void UXsollaPayStationSubsystem::CheckPurchaseStatus(const FString& PurchaseUUID, const FOnCheckPurchaseStatusSuccess& SuccessCallback, const FOnPayStationError& ErrorCallback)
+void UXsollaPaymentsSubsystem::CheckPurchaseStatus(const FString& PurchaseUUID, const FOnCheckPurchaseStatusSuccess& SuccessCallback, const FOnPaymentsError& ErrorCallback)
 {
 	const FString Url = FString::Printf(TEXT("https://api.xsolla.com/merchant/projects/%d/transactions/external/%s/status"), ProjectID, *PurchaseUUID);
 
 	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(Url);
 	HttpRequest->SetVerb(TEXT("GET"));
-	HttpRequest->OnProcessRequestComplete().BindUObject(this, &UXsollaPayStationSubsystem::CheckPurchaseStatus_HttpRequestComplete, SuccessCallback, ErrorCallback);
+	HttpRequest->OnProcessRequestComplete().BindUObject(this, &UXsollaPaymentsSubsystem::CheckPurchaseStatus_HttpRequestComplete, SuccessCallback, ErrorCallback);
 	HttpRequest->ProcessRequest();
 }
 
-bool UXsollaPayStationSubsystem::IsSandboxEnabled() const
+bool UXsollaPaymentsSubsystem::IsSandboxEnabled() const
 {
-	const UXsollaPayStationSettings* Settings = FXsollaPayStationModule::Get().GetSettings();
+	const UXsollaPaymentsSettings* Settings = FXsollaPaymentsModule::Get().GetSettings();
 	bool bIsSandboxEnabled = Settings->bSandbox;
 
 #if UE_BUILD_SHIPPING
 	bIsSandboxEnabled = Settings->bSandbox && Settings->bEnableSandboxInShipping;
 	if (bIsSandboxEnabled)
 	{
-		UE_LOG(LogXsollaPayStation, Warning, TEXT("%s: Sandbox should be disabled in Shipping build"), *VA_FUNC_LINE);
+		UE_LOG(LogXsollaPayments, Warning, TEXT("%s: Sandbox should be disabled in Shipping build"), *VA_FUNC_LINE);
 }
 #endif // UE_BUILD_SHIPPING
 
 	return bIsSandboxEnabled;
 }
 
-void UXsollaPayStationSubsystem::CheckPurchaseStatus_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnCheckPurchaseStatusSuccess SuccessCallback, FOnPayStationError ErrorCallback)
+void UXsollaPaymentsSubsystem::CheckPurchaseStatus_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnCheckPurchaseStatusSuccess SuccessCallback, FOnPaymentsError ErrorCallback)
 {
 	if (HandlePurchaseStatusError(HttpRequest, HttpResponse, bSucceeded, ErrorCallback))
 	{
@@ -154,21 +153,21 @@ void UXsollaPayStationSubsystem::CheckPurchaseStatus_HttpRequestComplete(FHttpRe
 	}
 
 	FString ResponseStr = HttpResponse->GetContentAsString();
-	UE_LOG(LogXsollaPayStation, Verbose, TEXT("%s: Response: %s"), *VA_FUNC_LINE, *ResponseStr);
+	UE_LOG(LogXsollaPayments, Verbose, TEXT("%s: Response: %s"), *VA_FUNC_LINE, *ResponseStr);
 
 	TSharedPtr<FJsonObject> JsonObject;
 	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(*HttpResponse->GetContentAsString());
 	if (!FJsonSerializer::Deserialize(Reader, JsonObject))
 	{
-		UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Can't deserialize server response"), *VA_FUNC_LINE);
+		UE_LOG(LogXsollaPayments, Error, TEXT("%s: Can't deserialize server response"), *VA_FUNC_LINE);
 		ErrorCallback.ExecuteIfBound(HttpResponse->GetResponseCode(), TEXT("Can't deserialize server response"));
 		return;
 	}
 
-	FXsollaPayStationPurchaseStatus purchaseStatus;
-	if (!FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), FXsollaPayStationPurchaseStatus::StaticStruct(), &purchaseStatus))
+	FXsollaPaymentsPurchaseStatus purchaseStatus;
+	if (!FJsonObjectConverter::JsonObjectToUStruct(JsonObject.ToSharedRef(), FXsollaPaymentsPurchaseStatus::StaticStruct(), &purchaseStatus))
 	{
-		UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Can't convert server response to struct"), *VA_FUNC_LINE);
+		UE_LOG(LogXsollaPayments, Error, TEXT("%s: Can't convert server response to struct"), *VA_FUNC_LINE);
 		ErrorCallback.ExecuteIfBound(HttpResponse->GetResponseCode(), TEXT("Can't convert server response to struct"));
 		return;
 	}
@@ -176,7 +175,7 @@ void UXsollaPayStationSubsystem::CheckPurchaseStatus_HttpRequestComplete(FHttpRe
 	SuccessCallback.ExecuteIfBound(purchaseStatus);
 }
 
-bool UXsollaPayStationSubsystem::HandlePurchaseStatusError(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnPayStationError ErrorCallback)
+bool UXsollaPaymentsSubsystem::HandlePurchaseStatusError(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnPaymentsError ErrorCallback)
 {
 	int32 StatusCode = 0;
 	FString ErrorStr;
@@ -219,7 +218,7 @@ bool UXsollaPayStationSubsystem::HandlePurchaseStatusError(FHttpRequestPtr HttpR
 
 	if (!ErrorStr.IsEmpty())
 	{
-		UE_LOG(LogXsollaPayStation, Warning, TEXT("%s: request failed (%s): %s"), *VA_FUNC_LINE, *ErrorStr, *ResponseStr);
+		UE_LOG(LogXsollaPayments, Warning, TEXT("%s: request failed (%s): %s"), *VA_FUNC_LINE, *ErrorStr, *ResponseStr);
 		ErrorCallback.ExecuteIfBound(StatusCode, ErrorStr);
 		return true;
 	}
@@ -227,26 +226,26 @@ bool UXsollaPayStationSubsystem::HandlePurchaseStatusError(FHttpRequestPtr HttpR
 	return false;
 }
 
-TSharedRef<IHttpRequest> UXsollaPayStationSubsystem::CreateHttpRequest(const FString& Url) const
+TSharedRef<IHttpRequest> UXsollaPaymentsSubsystem::CreateHttpRequest(const FString& Url) const
 {
 	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
 
-	const FString MetaUrl = FString::Printf(TEXT("%sengine=ue4&engine_v=%s&sdk=paystation&sdk_v=%s"),
+	const FString MetaUrl = FString::Printf(TEXT("%sengine=ue4&engine_v=%s&sdk=Payments&sdk_v=%s"),
 		Url.Contains(TEXT("?")) ? TEXT("&") : TEXT("?"),
 		ENGINE_VERSION_STRING,
-		XSOLLA_PAYSTATION_VERSION);
+		XSOLLA_PAYMENTS_VERSION);
 	HttpRequest->SetURL(Url + MetaUrl);
 
 	// Xsolla meta
 	HttpRequest->SetHeader(TEXT("X-ENGINE"), TEXT("UE4"));
 	HttpRequest->SetHeader(TEXT("X-ENGINE-V"), ENGINE_VERSION_STRING);
-	HttpRequest->SetHeader(TEXT("X-SDK"), TEXT("PAYSTATION"));
-	HttpRequest->SetHeader(TEXT("X-SDK-V"), XSOLLA_PAYSTATION_VERSION);
+	HttpRequest->SetHeader(TEXT("X-SDK"), TEXT("PAYMENTS"));
+	HttpRequest->SetHeader(TEXT("X-SDK-V"), XSOLLA_PAYMENTS_VERSION);
 
 	return HttpRequest;
 }
 
-void UXsollaPayStationSubsystem::LoadImageFromWeb(const FString& URL, const FOnImageLoaded& SuccessCallback, const FOnImageLoadFailed& ErrorCallback)
+void UXsollaPaymentsSubsystem::LoadImageFromWeb(const FString& URL, const FOnImageLoaded& SuccessCallback, const FOnImageLoadFailed& ErrorCallback)
 {
 	ImageLoader->LoadImage(URL, SuccessCallback, ErrorCallback);
 }

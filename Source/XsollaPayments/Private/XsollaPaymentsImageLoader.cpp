@@ -1,8 +1,8 @@
 // Copyright 2020 Xsolla Inc. All Rights Reserved.
 
-#include "XsollaPayStationImageLoader.h"
+#include "XsollaPaymentsImageLoader.h"
 
-#include "XsollaPayStationDefines.h"
+#include "XsollaPaymentsDefines.h"
 
 #include "Framework/Application/SlateApplication.h"
 #include "IImageWrapper.h"
@@ -12,14 +12,14 @@
 
 #define LOCTEXT_NAMESPACE "FXsollaPayStatiomModule"
 
-void UXsollaPayStationImageLoader::LoadImage(FString URL, const FOnImageLoaded& SuccessCallback, const FOnImageLoadFailed& ErrorCallback)
+void UXsollaPaymentsImageLoader::LoadImage(FString URL, const FOnImageLoaded& SuccessCallback, const FOnImageLoadFailed& ErrorCallback)
 {
-	UE_LOG(LogXsollaPayStation, VeryVerbose, TEXT("%s: Loading image from: %s"), *VA_FUNC_LINE, *URL);
+	UE_LOG(LogXsollaPayments, VeryVerbose, TEXT("%s: Loading image from: %s"), *VA_FUNC_LINE, *URL);
 
 	const FString ResourceId = GetCacheName(URL).ToString();
 	if (ImageBrushes.Contains(ResourceId))
 	{
-		UE_LOG(LogXsollaPayStation, VeryVerbose, TEXT("%s: Loaded from cache: %s"), *VA_FUNC_LINE, *ResourceId);
+		UE_LOG(LogXsollaPayments, VeryVerbose, TEXT("%s: Loaded from cache: %s"), *VA_FUNC_LINE, *ResourceId);
 		SuccessCallback.ExecuteIfBound(*ImageBrushes.Find(ResourceId)->Get());
 	}
 	else
@@ -29,12 +29,12 @@ void UXsollaPayStationImageLoader::LoadImage(FString URL, const FOnImageLoaded& 
 			PendingRequests[ResourceId].AddLambda([=](bool IsCompleted) {
 				if (IsCompleted)
 				{
-					UE_LOG(LogXsollaPayStation, VeryVerbose, TEXT("%s: Loaded from cache: %s"), *VA_FUNC_LINE, *ResourceId);
+					UE_LOG(LogXsollaPayments, VeryVerbose, TEXT("%s: Loaded from cache: %s"), *VA_FUNC_LINE, *ResourceId);
 					SuccessCallback.ExecuteIfBound(*ImageBrushes.Find(ResourceId)->Get());
 				}
 				else
 				{
-					UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Failed to get image"), *VA_FUNC_LINE);
+					UE_LOG(LogXsollaPayments, Error, TEXT("%s: Failed to get image"), *VA_FUNC_LINE);
 					ErrorCallback.ExecuteIfBound();
 				}
 				});
@@ -46,7 +46,7 @@ void UXsollaPayStationImageLoader::LoadImage(FString URL, const FOnImageLoaded& 
 
 			TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
 
-			HttpRequest->OnProcessRequestComplete().BindUObject(this, &UXsollaPayStationImageLoader::LoadImage_HttpRequestComplete, SuccessCallback, ErrorCallback);
+			HttpRequest->OnProcessRequestComplete().BindUObject(this, &UXsollaPaymentsImageLoader::LoadImage_HttpRequestComplete, SuccessCallback, ErrorCallback);
 			HttpRequest->SetURL(URL);
 			HttpRequest->SetVerb(TEXT("GET"));
 
@@ -55,7 +55,7 @@ void UXsollaPayStationImageLoader::LoadImage(FString URL, const FOnImageLoaded& 
 	}
 }
 
-void UXsollaPayStationImageLoader::LoadImage_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnImageLoaded SuccessCallback, FOnImageLoadFailed ErrorCallback)
+void UXsollaPaymentsImageLoader::LoadImage_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnImageLoaded SuccessCallback, FOnImageLoadFailed ErrorCallback)
 {
 	const FName ResourceName = GetCacheName(HttpRequest->GetURL());
 
@@ -69,7 +69,7 @@ void UXsollaPayStationImageLoader::LoadImage_HttpRequestComplete(FHttpRequestPtr
 
 		if (!ImageWrapper.IsValid())
 		{
-			UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Invalid image wrapper"), *VA_FUNC_LINE);
+			UE_LOG(LogXsollaPayments, Error, TEXT("%s: Invalid image wrapper"), *VA_FUNC_LINE);
 		}
 		else if (ImageWrapper->SetCompressed(ImageData.GetData(), ImageData.Num()))
 		{
@@ -92,22 +92,22 @@ void UXsollaPayStationImageLoader::LoadImage_HttpRequestComplete(FHttpRequestPtr
 				}
 				else
 				{
-					UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Can't generate resource"), *VA_FUNC_LINE);
+					UE_LOG(LogXsollaPayments, Error, TEXT("%s: Can't generate resource"), *VA_FUNC_LINE);
 				}
 			}
 			else
 			{
-				UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Can't get raw data"), *VA_FUNC_LINE);
+				UE_LOG(LogXsollaPayments, Error, TEXT("%s: Can't get raw data"), *VA_FUNC_LINE);
 			}
 		}
 		else
 		{
-			UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Can't load compressed data"), *VA_FUNC_LINE);
+			UE_LOG(LogXsollaPayments, Error, TEXT("%s: Can't load compressed data"), *VA_FUNC_LINE);
 		}
 	}
 	else
 	{
-		UE_LOG(LogXsollaPayStation, Error, TEXT("%s: Failed to download image"), *VA_FUNC_LINE);
+		UE_LOG(LogXsollaPayments, Error, TEXT("%s: Failed to download image"), *VA_FUNC_LINE);
 	}
 
 	ErrorCallback.ExecuteIfBound();
@@ -119,9 +119,9 @@ void UXsollaPayStationImageLoader::LoadImage_HttpRequestComplete(FHttpRequestPtr
 	}
 }
 
-FName UXsollaPayStationImageLoader::GetCacheName(const FString& URL) const
+FName UXsollaPaymentsImageLoader::GetCacheName(const FString& URL) const
 {
-	return FName(*FString::Printf(TEXT("XsollaPayStationImage_%s"), *FMD5::HashAnsiString(*URL)));
+	return FName(*FString::Printf(TEXT("XsollaPaymentsImage_%s"), *FMD5::HashAnsiString(*URL)));
 }
 
 #undef LOCTEXT_NAMESPACE

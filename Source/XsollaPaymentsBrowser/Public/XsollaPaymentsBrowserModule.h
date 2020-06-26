@@ -4,7 +4,7 @@
 
 #include "Modules/ModuleManager.h"
 
-class IXsollaPayStationBrowserModule : public IModuleInterface
+class IXsollaPaymentsBrowserModule : public IModuleInterface
 {
 
 public:
@@ -14,9 +14,9 @@ public:
 	 *
 	 * @return Returns singleton instance, loading the module on demand if needed
 	 */
-	static inline IXsollaPayStationBrowserModule& Get()
+	static inline IXsollaPaymentsBrowserModule& Get()
 	{
-		return FModuleManager::LoadModuleChecked<IXsollaPayStationBrowserModule>("XsollaPayStationBrowser");
+		return FModuleManager::LoadModuleChecked<IXsollaPaymentsBrowserModule>("XsollaPaymentsBrowser");
 	}
 
 	/**
@@ -26,6 +26,6 @@ public:
 	 */
 	static inline bool IsAvailable()
 	{
-		return FModuleManager::Get().IsModuleLoaded("XsollaPayStationBrowser");
+		return FModuleManager::Get().IsModuleLoaded("XsollaPaymentsBrowser");
 	}
 };

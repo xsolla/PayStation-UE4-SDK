@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class XsollaPayStation : ModuleRules
+public class XsollaPayments : ModuleRules
 {
-	public XsollaPayStation(ReadOnlyTargetRules Target) : base(Target)
+	public XsollaPayments(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -16,7 +16,7 @@ public class XsollaPayStation : ModuleRules
 				"Json",
 				"JsonUtilities",
 				"UMG",
-				"XsollaPayStationBrowser"
+				"XsollaPaymentsBrowser"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -32,6 +32,6 @@ public class XsollaPayStation : ModuleRules
 			}
 			);
 
-		PublicDefinitions.Add("WITH_XSOLLA_PAYSTATION=1");
+		PublicDefinitions.Add("WITH_XSOLLA_PAYMENTS=1");
 	}
 }

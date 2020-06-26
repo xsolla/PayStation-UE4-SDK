@@ -4,10 +4,10 @@
 
 #include "Components/Widget.h"
 
-#include "XsollaPayStationBrowser.generated.h"
+#include "XsollaPaymentsBrowser.generated.h"
 
 UCLASS()
-class XSOLLAPAYSTATIONBROWSER_API UXsollaPayStationBrowser : public UWidget
+class XSOLLAPAYMENTSBROWSER_API UXsollaPaymentsBrowser : public UWidget
 {
 	GENERATED_UCLASS_BODY()
 
@@ -20,7 +20,7 @@ public:
 	 *
 	 * @param NewURL New URL to load
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation Browser")
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments Browser")
 	void LoadURL(FString NewURL);
 
 	/**
@@ -28,15 +28,15 @@ public:
 	 *
 	 * @return The URL, or empty string if no document is loaded.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation Browser")
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments Browser")
 	FString GetUrl() const;
 
 	/** Called when the Url changes. */
-	UPROPERTY(BlueprintAssignable, Category = "Xsolla|PayStation Browser")
+	UPROPERTY(BlueprintAssignable, Category = "Xsolla|Payments Browser")
 	FOnUrlChanged OnUrlChanged;
 
 	/** Called when a popup is about to spawn. */
-	UPROPERTY(BlueprintAssignable, Category = "Xsolla|PayStation Browser")
+	UPROPERTY(BlueprintAssignable, Category = "Xsolla|Payments Browser")
 	FOnBeforePopup OnBeforePopup;
 
 public:
@@ -56,7 +56,7 @@ protected:
 	bool bSupportsTransparency;
 
 protected:
-	TSharedPtr<class SWebBrowser> PayStationBrowserWidget;
+	TSharedPtr<class SWebBrowser> PaymentsBrowserWidget;
 
 protected:
 	// UWidget interface

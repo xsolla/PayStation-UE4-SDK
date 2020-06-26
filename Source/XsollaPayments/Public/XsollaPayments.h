@@ -5,12 +5,12 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class UXsollaPayStationSettings;
+class UXsollaPaymentsSettings;
 
 /**
- * Xsolla PayStation SDK Module
+ * Xsolla Payments SDK Module
  */
-class FXsollaPayStationModule : public IModuleInterface
+class FXsollaPaymentsModule : public IModuleInterface
 {
 public:
 
@@ -24,9 +24,9 @@ public:
 	 *
 	 * @return Returns singleton instance, loading the module on demand if needed
 	 */
-	static inline FXsollaPayStationModule& Get()
+	static inline FXsollaPaymentsModule& Get()
 	{
-		return FModuleManager::LoadModuleChecked<FXsollaPayStationModule>("XsollaPayStation");
+		return FModuleManager::LoadModuleChecked<FXsollaPaymentsModule>("XsollaPayments");
 	}
 
 	/**
@@ -36,14 +36,14 @@ public:
 	 */
 	static inline bool IsAvailable()
 	{
-		return FModuleManager::Get().IsModuleLoaded("XsollaPayStation");
+		return FModuleManager::Get().IsModuleLoaded("XsollaPayments");
 	}
 
 	/** Getter for internal settings object to support runtime configuration changes */
-	UXsollaPayStationSettings* GetSettings() const;
+	UXsollaPaymentsSettings* GetSettings() const;
 
 private:
 
 	/** Module settings */
-	UXsollaPayStationSettings* XsollaPayStationSettings;
+	UXsollaPaymentsSettings* XsollaPaymentsSettings;
 };

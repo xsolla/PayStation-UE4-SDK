@@ -1,6 +1,6 @@
-# Xsolla PayStation SDK
+# Xsolla Payments SDK
 
-Xsolla PayStation SDK is used to integrate Xsolla payment services into Unreal Engine games.
+Xsolla Payments SDK is used to integrate Xsolla payment services into Unreal Engine games.
 
 ## System Requirements
 
@@ -28,4 +28,4 @@ Xsolla PayStation SDK is used to integrate Xsolla payment services into Unreal E
 4. Create and set up a Publisher Account project:
     1. Go to Projects and click **Create new project**.
     2. In setup mode, add **Project name** and click **Create**.
-6. Go to the [wiki](https://github.com/xsolla/PayStation-ue4-sdk/wiki/Xsolla-PayStation-SDK-wiki) to learn how to integrate Xsolla products using  **Xsolla PayStation SDK for Unreal Engine 4**. 
+6. Go to the [wiki](https://github.com/xsolla/PayStation-ue4-sdk/wiki/Xsolla-PayStation-SDK-wiki) to learn how to integrate Xsolla products using  **Xsolla Payments SDK for Unreal Engine 4**. 

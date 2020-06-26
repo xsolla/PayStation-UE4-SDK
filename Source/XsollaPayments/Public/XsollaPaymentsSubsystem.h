@@ -6,22 +6,22 @@
 #include "Http.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Subsystems/SubsystemCollection.h"
-#include "XsollaPayStationDataModel.h"
+#include "XsollaPaymentsDataModel.h"
 
-#include "XsollaPayStationSubsystem.generated.h"
+#include "XsollaPaymentsSubsystem.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FOnCheckPurchaseStatusSuccess, FXsollaPayStationPurchaseStatus, PurchaseStatus);
-DECLARE_DYNAMIC_DELEGATE_TwoParams(FOnPayStationError, int32, StatusCode, const FString&, ErrorMessage);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnCheckPurchaseStatusSuccess, FXsollaPaymentsPurchaseStatus, PurchaseStatus);
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FOnPaymentsError, int32, StatusCode, const FString&, ErrorMessage);
 
-class UXsollaPayStationImageLoader;
+class UXsollaPaymentsImageLoader;
 
 UCLASS()
-class XSOLLAPAYSTATION_API UXsollaPayStationSubsystem : public UGameInstanceSubsystem
+class XSOLLAPAYMENTS_API UXsollaPaymentsSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
 public:
-	UXsollaPayStationSubsystem();
+	UXsollaPaymentsSubsystem();
 
 	// Begin USubsystem
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
@@ -29,42 +29,42 @@ public:
 	// End USubsystem
 
 	/** Open payment console for provided token */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation")
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments")
 	void LaunchPaymentConsole(const FString& PaymentToken, UUserWidget*& BrowserWidget);
 
 	/** Open payment console for provided token */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation")
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments")
 	void LaunchPaymentConsoleWithAccessData(FXsollaPaymentsAccessData accessData, UUserWidget*& BrowserWidget);
 
-	/** Get pending PayStation URL to be opened in browser */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation")
-	FString GetPendingPayStationUrl() const;
+	/** Get pending Payments URL to be opened in browser */
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments")
+	FString GetPendingPaymentsUrl() const;
 
 	/** Check purchase status by its UUID */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|PayStation", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
-	void CheckPurchaseStatus(const FString& PurchaseUUID, const FOnCheckPurchaseStatusSuccess& SuccessCallback, const FOnPayStationError& ErrorCallback);
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
+	void CheckPurchaseStatus(const FString& PurchaseUUID, const FOnCheckPurchaseStatusSuccess& SuccessCallback, const FOnPaymentsError& ErrorCallback);
 
 protected:
 	/** Check whether sandbox is enabled */
 	bool IsSandboxEnabled() const;
 
-	void CheckPurchaseStatus_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnCheckPurchaseStatusSuccess SuccessCallback, FOnPayStationError ErrorCallback);
+	void CheckPurchaseStatus_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnCheckPurchaseStatusSuccess SuccessCallback, FOnPaymentsError ErrorCallback);
 
 	/** Return true if error is happened */
-	bool HandlePurchaseStatusError(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnPayStationError ErrorCallback);
+	bool HandlePurchaseStatusError(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnPaymentsError ErrorCallback);
 
 private:
 	/** Create HTTP request and add Xsolla API meta */
 	TSharedRef<IHttpRequest> CreateHttpRequest(const FString& Url) const;
 
 protected:
-	/** Pending PayStation URL to be opened in browser */
-	FString PengindPayStationUrl;
+	/** Pending Payments URL to be opened in browser */
+	FString PengindPaymentsUrl;
 
 	static const FString PaymentEndpoint;
 	static const FString SandboxPaymentEndpoint;
 
-	/** Cached Xsolla PayStation Project ID */
+	/** Cached Xsolla Payments Project ID */
 	int32 ProjectID;
 
 private:
@@ -72,7 +72,7 @@ private:
 	TSubclassOf<UUserWidget> DefaultBrowserWidgetClass;
 
 	UPROPERTY()
-	UXsollaPayStationImageLoader* ImageLoader;
+	UXsollaPaymentsImageLoader* ImageLoader;
 
 public:
 	/** Async load image from the web

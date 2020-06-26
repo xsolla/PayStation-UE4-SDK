@@ -6,20 +6,20 @@
 #include "CoreMinimal.h"
 #include "Http.h"
 
-#include "XsollaPayStationImageLoader.generated.h"
+#include "XsollaPaymentsImageLoader.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnImageLoaded, FSlateBrush, ImageBrush);
 DECLARE_DYNAMIC_DELEGATE(FOnImageLoadFailed);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnRequestCompleted, bool);
 
 UCLASS()
-class XSOLLAPAYSTATION_API UXsollaPayStationImageLoader : public UObject
+class XSOLLAPAYMENTS_API UXsollaPaymentsImageLoader : public UObject
 {
 	GENERATED_BODY()
 
 public:
 	/** Load image from web by the given URL */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla | PayStation", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
+	UFUNCTION(BlueprintCallable, Category = "Xsolla | Payments", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
 	void LoadImage(FString URL, const FOnImageLoaded& SuccessCallback, const FOnImageLoadFailed& ErrorCallback);
 
 protected:

@@ -1,46 +1,46 @@
 ﻿// Copyright 2020 Xsolla Inc. All Rights Reserved.
 
-#include "XsollaPayStationBrowser.h"
+#include "XsollaPaymentsBrowser.h"
 
 #include "Async/TaskGraphInterfaces.h"
 #include "SWebBrowser.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"
 
-#define LOCTEXT_NAMESPACE "XsollaPayStationBrowser"
+#define LOCTEXT_NAMESPACE "XsollaPaymentsBrowser"
 
-UXsollaPayStationBrowser::UXsollaPayStationBrowser(const FObjectInitializer& ObjectInitializer)
+UXsollaPaymentsBrowser::UXsollaPaymentsBrowser(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	bIsVariable = true;
 }
 
-void UXsollaPayStationBrowser::LoadURL(FString NewURL)
+void UXsollaPaymentsBrowser::LoadURL(FString NewURL)
 {
-	if (PayStationBrowserWidget.IsValid())
+	if (PaymentsBrowserWidget.IsValid())
 	{
-		return PayStationBrowserWidget->LoadURL(NewURL);
+		return PaymentsBrowserWidget->LoadURL(NewURL);
 	}
 }
 
-FString UXsollaPayStationBrowser::GetUrl() const
+FString UXsollaPaymentsBrowser::GetUrl() const
 {
-	if (PayStationBrowserWidget.IsValid())
+	if (PaymentsBrowserWidget.IsValid())
 	{
-		return PayStationBrowserWidget->GetUrl();
+		return PaymentsBrowserWidget->GetUrl();
 	}
 
 	return FString();
 }
 
-void UXsollaPayStationBrowser::ReleaseSlateResources(bool bReleaseChildren)
+void UXsollaPaymentsBrowser::ReleaseSlateResources(bool bReleaseChildren)
 {
 	Super::ReleaseSlateResources(bReleaseChildren);
 
-	PayStationBrowserWidget.Reset();
+	PaymentsBrowserWidget.Reset();
 }
 
-TSharedRef<SWidget> UXsollaPayStationBrowser::RebuildWidget()
+TSharedRef<SWidget> UXsollaPaymentsBrowser::RebuildWidget()
 {
 	// clang-format off
 	if (IsDesignTime())
@@ -50,29 +50,29 @@ TSharedRef<SWidget> UXsollaPayStationBrowser::RebuildWidget()
 			.VAlign(VAlign_Center)
 			[
 				SNew(STextBlock)
-				.Text(LOCTEXT("Xsolla PayStation Browser", "Xsolla PayStation Browser"))
+				.Text(LOCTEXT("Xsolla Payments Browser", "Xsolla Payments Browser"))
 			];
 	}
 	else
 	{
-		PayStationBrowserWidget = SNew(SWebBrowser)
+		PaymentsBrowserWidget = SNew(SWebBrowser)
 			.InitialURL(InitialURL)
 			.ShowControls(false)
 			.SupportsTransparency(bSupportsTransparency)
 			.OnUrlChanged(BIND_UOBJECT_DELEGATE(FOnTextChanged, HandleOnUrlChanged))
 			.OnBeforePopup(BIND_UOBJECT_DELEGATE(FOnBeforePopupDelegate, HandleOnBeforePopup));
 
-		return PayStationBrowserWidget.ToSharedRef();
+		return PaymentsBrowserWidget.ToSharedRef();
 	}
 	// clang-format on
 }
 
-void UXsollaPayStationBrowser::HandleOnUrlChanged(const FText& InText)
+void UXsollaPaymentsBrowser::HandleOnUrlChanged(const FText& InText)
 {
 	OnUrlChanged.Broadcast(InText);
 }
 
-bool UXsollaPayStationBrowser::HandleOnBeforePopup(FString URL, FString Frame)
+bool UXsollaPaymentsBrowser::HandleOnBeforePopup(FString URL, FString Frame)
 {
 	if (OnBeforePopup.IsBound())
 	{
@@ -84,7 +84,7 @@ bool UXsollaPayStationBrowser::HandleOnBeforePopup(FString URL, FString Frame)
 		{
 			// clang-format off
 			// Retry on the GameThread now
-			TWeakObjectPtr<UXsollaPayStationBrowser> WeakThis = this;
+			TWeakObjectPtr<UXsollaPaymentsBrowser> WeakThis = this;
 			FFunctionGraphTask::CreateAndDispatchWhenReady([WeakThis, URL, Frame]()
 			{
 				if (WeakThis.IsValid())
@@ -102,7 +102,7 @@ bool UXsollaPayStationBrowser::HandleOnBeforePopup(FString URL, FString Frame)
 }
 
 #if WITH_EDITOR
-const FText UXsollaPayStationBrowser::GetPaletteCategory()
+const FText UXsollaPaymentsBrowser::GetPaletteCategory()
 {
 	return LOCTEXT("Xsolla", "Xsolla");
 }

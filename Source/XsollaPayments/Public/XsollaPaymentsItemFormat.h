@@ -4,10 +4,10 @@
 
 #include "Engine/DataTable.h"
 
-#include "XsollaPayStationItemFormat.generated.h"
+#include "XsollaPaymentsItemFormat.generated.h"
 
 USTRUCT(Blueprintable)
-struct XSOLLAPAYSTATION_API FXsollaItemPrice
+struct XSOLLAPAYMENTS_API FXsollaItemPrice
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -22,7 +22,7 @@ struct XSOLLAPAYSTATION_API FXsollaItemPrice
 };
 
 USTRUCT(Blueprintable)
-struct XSOLLAPAYSTATION_API FXsollaVirtualCurrencyPackage
+struct XSOLLAPAYMENTS_API FXsollaVirtualCurrencyPackage
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -37,7 +37,7 @@ struct XSOLLAPAYSTATION_API FXsollaVirtualCurrencyPackage
 };
 
 USTRUCT(Blueprintable)
-struct XSOLLAPAYSTATION_API FXsollaCatalogItem : public FTableRowBase
+struct XSOLLAPAYMENTS_API FXsollaCatalogItem : public FTableRowBase
 {
 	GENERATED_USTRUCT_BODY()
 

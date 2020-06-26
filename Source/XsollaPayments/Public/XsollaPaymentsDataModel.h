@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include "XsollaPayStationDataModel.generated.h"
+#include "XsollaPaymentsDataModel.generated.h"
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYSTATION_API FXsollaPaymentsStringValue
+struct XSOLLAPAYMENTS_API FXsollaPaymentsStringValue
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -14,7 +14,7 @@ struct XSOLLAPAYSTATION_API FXsollaPaymentsStringValue
 };
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYSTATION_API FXsollaPaymentsCountry : public FXsollaPaymentsStringValue
+struct XSOLLAPAYMENTS_API FXsollaPaymentsCountry : public FXsollaPaymentsStringValue
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -26,7 +26,7 @@ struct XSOLLAPAYSTATION_API FXsollaPaymentsCountry : public FXsollaPaymentsStrin
 };
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYSTATION_API FXsollaPaymentsPurchaseUserInfo
+struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseUserInfo
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -44,7 +44,7 @@ struct XSOLLAPAYSTATION_API FXsollaPaymentsPurchaseUserInfo
 };
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYSTATION_API FXsollaPaymentsPurchaseSettingsUI
+struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseSettingsUI
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -53,7 +53,7 @@ struct XSOLLAPAYSTATION_API FXsollaPaymentsPurchaseSettingsUI
 };
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYSTATION_API FXsollaPaymentsPurchaseSettings
+struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseSettings
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -77,7 +77,7 @@ struct XSOLLAPAYSTATION_API FXsollaPaymentsPurchaseSettings
 };
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYSTATION_API FXsollaPaymentsVirtualItem
+struct XSOLLAPAYMENTS_API FXsollaPaymentsVirtualItem
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -92,7 +92,7 @@ struct XSOLLAPAYSTATION_API FXsollaPaymentsVirtualItem
 };
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYSTATION_API FXsollaPaymentsVirtualItems
+struct XSOLLAPAYMENTS_API FXsollaPaymentsVirtualItems
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -101,7 +101,7 @@ struct XSOLLAPAYSTATION_API FXsollaPaymentsVirtualItems
 };
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYSTATION_API FXsollaPaymentsPurchaseContent
+struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseContent
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -110,7 +110,7 @@ struct XSOLLAPAYSTATION_API FXsollaPaymentsPurchaseContent
 };
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYSTATION_API FXsollaPaymentsAccessData
+struct XSOLLAPAYMENTS_API FXsollaPaymentsAccessData
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -125,7 +125,7 @@ struct XSOLLAPAYSTATION_API FXsollaPaymentsAccessData
 };
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYSTATION_API FXsollaPayStationPurchaseStatus
+struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseStatus
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -138,6 +138,6 @@ struct XSOLLAPAYSTATION_API FXsollaPayStationPurchaseStatus
 	UPROPERTY(BlueprintReadOnly, Category = "Xsolla Payments Order")
 	FString external_id;
 
-	FXsollaPayStationPurchaseStatus()
+	FXsollaPaymentsPurchaseStatus()
 		: id(0) {};
 };
