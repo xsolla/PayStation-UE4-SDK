@@ -48,10 +48,10 @@ void UXsollaPaymentsSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
-void UXsollaPaymentsSubsystem::LaunchPaymentConsole(const FString& PaymentToken, UUserWidget*& BrowserWidget)
+void UXsollaPaymentsSubsystem::LaunchPaymentConsoleWithAccessToken(const FString& AccessToken, UUserWidget*& BrowserWidget)
 {
 	const FString Endpoint = IsSandboxEnabled() ? SandboxPaymentEndpoint : PaymentEndpoint;
-	const FString PaymentsUrl = FString::Printf(TEXT("%s?access_token=%s"), *Endpoint, *PaymentToken);
+	const FString PaymentsUrl = FString::Printf(TEXT("%s?access_token=%s"), *Endpoint, *AccessToken);
 
 	UE_LOG(LogXsollaPayments, Log, TEXT("%s: Loading Payments: %s"), *VA_FUNC_LINE, *PaymentsUrl);
 

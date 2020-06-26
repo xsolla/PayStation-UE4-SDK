@@ -30,13 +30,13 @@ public:
 
 	/** Open payment console for provided token */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments")
-	void LaunchPaymentConsole(const FString& PaymentToken, UUserWidget*& BrowserWidget);
+	void LaunchPaymentConsoleWithAccessToken(const FString& AccessToken, UUserWidget*& BrowserWidget);
 
 	/** Open payment console for provided token */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments")
 	void LaunchPaymentConsoleWithAccessData(FXsollaPaymentsAccessData accessData, UUserWidget*& BrowserWidget);
 
-	/** Get pending Payments URL to be opened in browser */
+	/** Get pending payment URL to be opened in browser */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments")
 	FString GetPendingPaymentsUrl() const;
 
