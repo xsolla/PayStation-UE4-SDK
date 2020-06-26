@@ -14,18 +14,6 @@ struct XSOLLAPAYMENTS_API FXsollaPaymentsStringValue
 };
 
 USTRUCT(BlueprintType)
-struct XSOLLAPAYMENTS_API FXsollaPaymentsCountry : public FXsollaPaymentsStringValue
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(BlueprintReadWrite, Category = "Xsolla Payments Access Data")
-	bool allow_modify;
-
-	FXsollaPaymentsCountry()
-		: FXsollaPaymentsStringValue(), allow_modify(false) {};
-};
-
-USTRUCT(BlueprintType)
 struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseUserInfo
 {
 	GENERATED_USTRUCT_BODY()
@@ -38,9 +26,6 @@ struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseUserInfo
 
 	UPROPERTY(BlueprintReadWrite, Category = "Xsolla Payments Access Data")
 	FXsollaPaymentsStringValue email;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Xsolla Payments Access Data")
-	FXsollaPaymentsCountry country;
 };
 
 USTRUCT(BlueprintType)
@@ -65,9 +50,6 @@ struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseSettings
 
 	UPROPERTY(BlueprintReadWrite, Category = "Xsolla Payments Access Data")
 	FString mode;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Xsolla Payments Access Data")
-	FString currency;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Xsolla Payments Access Data")
 	FXsollaPaymentsPurchaseSettingsUI ui;
