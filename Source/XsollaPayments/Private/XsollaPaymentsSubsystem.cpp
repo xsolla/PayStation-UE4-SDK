@@ -53,65 +53,22 @@ void UXsollaPaymentsSubsystem::LaunchPaymentConsoleWithAccessToken(const FString
 	const FString Endpoint = IsSandboxEnabled() ? SandboxPaymentEndpoint : PaymentEndpoint;
 	const FString PaymentsUrl = FString::Printf(TEXT("%s?access_token=%s"), *Endpoint, *AccessToken);
 
-	UE_LOG(LogXsollaPayments, Log, TEXT("%s: Loading Payments: %s"), *VA_FUNC_LINE, *PaymentsUrl);
-
-	const UXsollaPaymentsSettings* Settings = FXsollaPaymentsModule::Get().GetSettings();
-
-	if (Settings->UsePlatformBrowser)
-	{
-		BrowserWidget = nullptr;
-
-		FPlatformProcess::LaunchURL(*PaymentsUrl, nullptr, nullptr);
-	}
-	else
-	{
-		// Check for user browser widget override
-		auto BrowserWidgetClass = (Settings->OverrideBrowserWidgetClass) ? Settings->OverrideBrowserWidgetClass : DefaultBrowserWidgetClass;
-
-		PengindPaymentsUrl = PaymentsUrl;
-		auto MyBrowser = CreateWidget<UUserWidget>(GEngine->GameViewport->GetWorld(), BrowserWidgetClass);
-		MyBrowser->AddToViewport(MAX_int32);
-
-		BrowserWidget = MyBrowser;
-	}
+	OpenBrowser(PaymentsUrl, BrowserWidget);
 }
 
 void UXsollaPaymentsSubsystem::LaunchPaymentConsoleWithAccessData(FXsollaPaymentsAccessData accessData, UUserWidget*& BrowserWidget)
 {
 	// Prepare access data for payment
 	FString accessDataStr;
-	if (!FJsonObjectConverter::UStructToJsonObjectString(accessData, accessDataStr))
+	if (!FJsonObjectConverter::UStructToJsonObjectString(accessData, accessDataStr, 0, 0, 0, nullptr, false))
 	{
 		UE_LOG(LogXsollaPayments, Error, TEXT("%s: Failed to parse payment acces data"), *VA_FUNC_LINE);
 	}
 
-	// Minify access data json
-	accessDataStr = accessDataStr.Replace(TEXT("\n"), TEXT("")).Replace(TEXT(" "), TEXT(""));
-
 	const FString Endpoint = IsSandboxEnabled() ? SandboxPaymentEndpoint : PaymentEndpoint;
 	const FString PaymentsUrl = FString::Printf(TEXT("%s?access_data=%s"), *Endpoint, *FGenericPlatformHttp::UrlEncode(accessDataStr));
 
-	UE_LOG(LogXsollaPayments, Log, TEXT("%s: Loading Payments: %s"), *VA_FUNC_LINE, *PaymentsUrl);
-
-	const UXsollaPaymentsSettings* Settings = FXsollaPaymentsModule::Get().GetSettings();
-
-	if (Settings->UsePlatformBrowser)
-	{
-		BrowserWidget = nullptr;
-
-		FPlatformProcess::LaunchURL(*PaymentsUrl, nullptr, nullptr);
-	}
-	else
-	{
-		// Check for user browser widget override
-		auto BrowserWidgetClass = (Settings->OverrideBrowserWidgetClass) ? Settings->OverrideBrowserWidgetClass : DefaultBrowserWidgetClass;
-
-		PengindPaymentsUrl = PaymentsUrl;
-		auto MyBrowser = CreateWidget<UUserWidget>(GEngine->GameViewport->GetWorld(), BrowserWidgetClass);
-		MyBrowser->AddToViewport(MAX_int32);
-
-		BrowserWidget = MyBrowser;
-	}
+	OpenBrowser(PaymentsUrl, BrowserWidget);
 }
 
 FString UXsollaPaymentsSubsystem::GetPendingPaymentsUrl() const
@@ -139,10 +96,35 @@ bool UXsollaPaymentsSubsystem::IsSandboxEnabled() const
 	if (bIsSandboxEnabled)
 	{
 		UE_LOG(LogXsollaPayments, Warning, TEXT("%s: Sandbox should be disabled in Shipping build"), *VA_FUNC_LINE);
-}
+	}
 #endif // UE_BUILD_SHIPPING
 
 	return bIsSandboxEnabled;
+}
+
+void UXsollaPaymentsSubsystem::OpenBrowser(const FString& Url, UUserWidget*& BrowserWidget)
+{
+	UE_LOG(LogXsollaPayments, Log, TEXT("%s: Loading Payments: %s"), *VA_FUNC_LINE, *Url);
+
+	const UXsollaPaymentsSettings* Settings = FXsollaPaymentsModule::Get().GetSettings();
+
+	if (Settings->UsePlatformBrowser)
+	{
+		BrowserWidget = nullptr;
+
+		FPlatformProcess::LaunchURL(*Url, nullptr, nullptr);
+	}
+	else
+	{
+		// Check for user browser widget override
+		auto BrowserWidgetClass = (Settings->OverrideBrowserWidgetClass) ? Settings->OverrideBrowserWidgetClass : DefaultBrowserWidgetClass;
+
+		PengindPaymentsUrl = Url;
+		auto MyBrowser = CreateWidget<UUserWidget>(GEngine->GameViewport->GetWorld(), BrowserWidgetClass);
+		MyBrowser->AddToViewport(MAX_int32);
+
+		BrowserWidget = MyBrowser;
+	}
 }
 
 void UXsollaPaymentsSubsystem::CheckPurchaseStatus_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnCheckPurchaseStatusSuccess SuccessCallback, FOnPaymentsError ErrorCallback)

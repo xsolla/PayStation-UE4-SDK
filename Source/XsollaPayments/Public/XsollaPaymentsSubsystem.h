@@ -48,6 +48,9 @@ protected:
 	/** Check whether sandbox is enabled */
 	bool IsSandboxEnabled() const;
 
+	/** Open payment console in browser */
+	void OpenBrowser(const FString& Url, UUserWidget*& BrowserWidget);
+
 	void CheckPurchaseStatus_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnCheckPurchaseStatusSuccess SuccessCallback, FOnPaymentsError ErrorCallback);
 
 	/** Return true if error is happened */
