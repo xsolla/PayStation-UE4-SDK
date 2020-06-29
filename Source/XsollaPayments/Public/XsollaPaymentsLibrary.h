@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "XsollaPaymentsDataModel.h"
 #include "XsollaPaymentsSettings.h"
 
 #include "Kismet/BlueprintFunctionLibrary.h"
@@ -10,6 +9,14 @@
 #include "XsollaPaymentsLibrary.generated.h"
 
 class UDataTable;
+
+/** Type of Payments SDK integration */
+UENUM(BlueprintType)
+enum class EXsollaPaymentsIntegration : uint8
+{
+	Simplified,
+	PlayFab
+};
 
 UCLASS()
 class XSOLLAPAYMENTS_API UXsollaPaymentsLibrary : public UBlueprintFunctionLibrary
@@ -28,4 +35,8 @@ public:
 	/** Convert Payments UI theme to acceptable string format */
 	UFUNCTION(BlueprintPure, meta = (DisplayName = "PaymentsUiTheme To String", CompactNodeTitle = "->", BlueprintAutocast), Category = "Xsolla | Payments")
 	static FString Conv_XsollaPaymentsUiThemeToString(EXsollaPaymentsUiTheme theme);
+
+	/** Get extra data for Payments SDK analytics */
+	UFUNCTION(BlueprintPure, Category = "Xsolla | Payments")
+	static FString GetPaymentsSdkTag(EXsollaPaymentsIntegration integrationType);
 };

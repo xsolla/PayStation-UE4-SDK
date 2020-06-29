@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "XsollaPaymentsLibrary.h"
+
 #include "XsollaPaymentsDataModel.generated.h"
 
 USTRUCT(BlueprintType)
@@ -35,6 +37,9 @@ struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseSettingsUI
 
 	UPROPERTY(BlueprintReadWrite, Category = "Xsolla Payments Access Data")
 	FString theme;
+
+	FXsollaPaymentsPurchaseSettingsUI()
+		: theme(TEXT("default_dark")) {};
 };
 
 USTRUCT(BlueprintType)
@@ -54,8 +59,12 @@ struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseSettings
 	UPROPERTY(BlueprintReadWrite, Category = "Xsolla Payments Access Data")
 	FXsollaPaymentsPurchaseSettingsUI ui;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Xsolla Payments Access Data")
+	FString xsolla_product_tag;
+
 	FXsollaPaymentsPurchaseSettings()
-		: project_id(0) {};
+		: project_id(0)
+		, xsolla_product_tag(UXsollaPaymentsLibrary::GetPaymentsSdkTag(EXsollaPaymentsIntegration::Simplified)) {};
 };
 
 USTRUCT(BlueprintType)
