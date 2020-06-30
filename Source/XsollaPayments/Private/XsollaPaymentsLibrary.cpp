@@ -4,6 +4,7 @@
 #include "XsollaPaymentsDefines.h"
 
 #include "Dom/JsonObject.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "JsonObjectConverter.h"
 #include "Engine/DataTable.h"
 
