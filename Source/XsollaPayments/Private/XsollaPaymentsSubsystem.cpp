@@ -64,6 +64,9 @@ void UXsollaPaymentsSubsystem::LaunchPaymentConsoleWithAccessData(FXsollaPayment
 	{
 		UE_LOG(LogXsollaPayments, Error, TEXT("%s: Failed to parse payment acces data"), *VA_FUNC_LINE);
 	}
+	
+	// fix property names that were altered by FJsonObjectConverter::UStructToJsonObjectString function
+	accessDataStr = accessDataStr.Replace(TEXT("uI"), TEXT("ui")).Replace(TEXT("iD"), TEXT("id"));
 
 	const FString Endpoint = IsSandboxEnabled() ? SandboxPaymentEndpoint : PaymentEndpoint;
 	const FString PaymentsUrl = FString::Printf(TEXT("%s?access_data=%s"), *Endpoint, *FGenericPlatformHttp::UrlEncode(accessDataStr));
