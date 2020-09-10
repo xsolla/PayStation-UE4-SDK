@@ -3,40 +3,59 @@
 #pragma once
 
 #include "XsollaPaymentsSettings.h"
+#include "Interfaces/IHttpRequest.h"
 
 #include "Kismet/BlueprintFunctionLibrary.h"
 
 #include "XsollaPaymentsLibrary.generated.h"
 
+struct FXsollaError;
+class IHttpRequest;
 class UDataTable;
 
 /** Type of Payments SDK integration */
 UENUM(BlueprintType)
 enum class EXsollaPaymentsIntegration : uint8
 {
-	Simplified,
-	PlayFab
+    Simplified,
+    PlayFab
 };
+
+UENUM(BlueprintType)
+enum class EXsollaLoginRequestVerb : uint8
+{
+    GET,
+    POST,
+    PUT,
+    DELETE,
+    PATCH
+};
+
+
 
 UCLASS()
 class XSOLLAPAYMENTS_API UXsollaPaymentsLibrary : public UBlueprintFunctionLibrary
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	/** Direct access to Payments SDK settings */
-	UFUNCTION(BlueprintPure, Category = "Xsolla | Payments")
-	static UXsollaPaymentsSettings* GetPaymentsSettings();
+    /** Direct access to Payments SDK settings */
+    UFUNCTION(BlueprintPure, Category = "Xsolla | Payments")
+    static UXsollaPaymentsSettings* GetPaymentsSettings();
 
-	/** Generate unique purchase identifier */
-	UFUNCTION(BlueprintPure, Category = "Xsolla | Payments")
-	static FString GeneratePurchaseUUID();
+    /** Generate unique purchase identifier */
+    UFUNCTION(BlueprintPure, Category = "Xsolla | Payments")
+    static FString GeneratePurchaseUUID();
 
-	/** Convert Payments UI theme to acceptable string format */
-	UFUNCTION(BlueprintPure, meta = (DisplayName = "PaymentsUiTheme To String", CompactNodeTitle = "->", BlueprintAutocast), Category = "Xsolla | Payments")
-	static FString Conv_XsollaPaymentsUiThemeToString(EXsollaPaymentsUiTheme theme);
+    /** Convert Payments UI theme to acceptable string format */
+    UFUNCTION(BlueprintPure, meta = (DisplayName = "PaymentsUiTheme To String", CompactNodeTitle = "->",
+        BlueprintAutocast), Category = "Xsolla | Payments")
+    static FString Conv_XsollaPaymentsUiThemeToString(EXsollaPaymentsUiTheme theme);
 
-	/** Get extra data for Payments SDK analytics */
-	UFUNCTION(BlueprintPure, Category = "Xsolla | Payments")
-	static FString GetPaymentsSdkTag(EXsollaPaymentsIntegration integrationType);
+    /** Get extra data for Payments SDK analytics */
+    UFUNCTION(BlueprintPure, Category = "Xsolla | Payments")
+    static FString GetPaymentsSdkTag(EXsollaPaymentsIntegration integrationType);
+
+    /** Create http request and add PlayFab meta */
+    static TSharedRef<IHttpRequest> CreateHttpRequest(const FString& Url, const EXsollaLoginRequestVerb Verb = EXsollaLoginRequestVerb::GET, const FString& Content = FString(), const FString& AuthToken = FString());
 };

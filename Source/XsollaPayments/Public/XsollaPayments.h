@@ -42,6 +42,8 @@ public:
 	/** Getter for internal settings object to support runtime configuration changes */
 	UXsollaPaymentsSettings* GetSettings() const;
 
+	FString GetTitleId() const;
+
 private:
 
 	/** Module settings */

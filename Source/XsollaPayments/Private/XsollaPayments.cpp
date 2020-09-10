@@ -50,6 +50,12 @@ UXsollaPaymentsSettings* FXsollaPaymentsModule::GetSettings() const
 	return XsollaPaymentsSettings;
 }
 
+FString FXsollaPaymentsModule::GetTitleId() const
+{
+	check(XsollaPaymentsSettings);
+	return XsollaPaymentsSettings->TitleID;
+}
+
 #undef LOCTEXT_NAMESPACE
 
 IMPLEMENT_MODULE(FXsollaPaymentsModule, XsollaPayments)
