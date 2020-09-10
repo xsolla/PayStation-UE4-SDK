@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2020 Xsolla Inc. All Rights Reserved.
 
 #pragma once
 
@@ -165,6 +165,6 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	                                     FOnAnyError ErrorCallback);
 
 	void ExecuteCloudScript_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse,
-                                         bool bSucceeded, FOnGetPurchaseSuccess SuccessCallback,
+                                         bool bSucceeded, FOnExecuteCloudScriptSuccess SuccessCallback,
                                          FOnAnyError ErrorCallback);
 };

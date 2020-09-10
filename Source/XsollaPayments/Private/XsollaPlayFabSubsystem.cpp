@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2020 Xsolla Inc. All Rights Reserved.
 
 #include "XsollaPlayFabSubsystem.h"
 #include "JsonObjectConverter.h"
@@ -21,8 +21,8 @@ const FString UXsollaPlayFabSubsystem::ExecuteCloudScriptEndpoint(TEXT("/Client/
 
 FXsollaClientLoginResult UXsollaPlayFabSubsystem::LoginData;
 
-void UXsollaPlayFabSubsystem::LoginWithPlayFab(const FXsollaClientLoginRequest Request,
-                                               const FOnLoginSuccess& SuccessCallback, const FOnAnyError& ErrorCallback)
+void UXsollaPlayFabSubsystem::LoginWithPlayFab(
+	const FXsollaClientLoginRequest Request, const FOnLoginSuccess& SuccessCallback, const FOnAnyError& ErrorCallback)
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
@@ -48,9 +48,8 @@ void UXsollaPlayFabSubsystem::LoginWithPlayFab(const FXsollaClientLoginRequest R
 	HttpRequest->ProcessRequest();
 }
 
-void UXsollaPlayFabSubsystem::RegisterPlayFabUser(const FXsollaRegisterRequest Request,
-                                                  const FOnRegisterSuccess& SuccessCallback,
-                                                  const FOnAnyError& ErrorCallback)
+void UXsollaPlayFabSubsystem::RegisterPlayFabUser(
+	const FXsollaRegisterRequest Request, const FOnRegisterSuccess& SuccessCallback, const FOnAnyError& ErrorCallback)
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
@@ -76,9 +75,9 @@ void UXsollaPlayFabSubsystem::RegisterPlayFabUser(const FXsollaRegisterRequest R
 	HttpRequest->ProcessRequest();
 }
 
-void UXsollaPlayFabSubsystem::SendAccountRecoveryEmail(const FXsollaRecoveryEmailRequest Request,
-                                                       const FOnRecoveryEmailSuccess& SuccessCallback,
-                                                       const FOnAnyError& ErrorCallback)
+void UXsollaPlayFabSubsystem::SendAccountRecoveryEmail(
+	const FXsollaRecoveryEmailRequest Request, const FOnRecoveryEmailSuccess& SuccessCallback,
+	const FOnAnyError& ErrorCallback)
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
@@ -96,8 +95,8 @@ void UXsollaPlayFabSubsystem::SendAccountRecoveryEmail(const FXsollaRecoveryEmai
 	HttpRequest->ProcessRequest();
 }
 
-void UXsollaPlayFabSubsystem::GetUserInventory(UObject* CustomTags, const FOnInventoryReceived& SuccessCallback,
-                                               const FOnAnyError& ErrorCallback)
+void UXsollaPlayFabSubsystem::GetUserInventory(
+	UObject* CustomTags, const FOnInventoryReceived& SuccessCallback, const FOnAnyError& ErrorCallback)
 {
 	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
@@ -303,7 +302,9 @@ void UXsollaPlayFabSubsystem::PurchaseItem_HttpRequestComplete(
 }
 
 void UXsollaPlayFabSubsystem::StartPurchase_HttpRequestComplete(FHttpRequestPtr HttpRequest,
-	FHttpResponsePtr HttpResponse, bool bSucceeded, FOnStartPurchaseSuccess SuccessCallback, FOnAnyError ErrorCallback)
+                                                                FHttpResponsePtr HttpResponse, bool bSucceeded,
+                                                                FOnStartPurchaseSuccess SuccessCallback,
+                                                                FOnAnyError ErrorCallback)
 {
 	if (HandleRequestError(HttpRequest, HttpResponse, bSucceeded, ErrorCallback))
 	{
@@ -322,12 +323,12 @@ void UXsollaPlayFabSubsystem::StartPurchase_HttpRequestComplete(FHttpRequestPtr 
 		FXsollaStartPurchaseResult Result;
 		const TSharedPtr<FJsonObject> Data = JsonObject->GetObjectField("data");
 		if (FJsonObjectConverter::JsonObjectToUStruct(
-            Data.ToSharedRef(), FXsollaStartPurchaseResult::StaticStruct(), &Result))
+			Data.ToSharedRef(), FXsollaStartPurchaseResult::StaticStruct(), &Result))
 		{
 			if (!SuccessCallback.ExecuteIfBound(Result))
 			{
 				UE_LOG(LogXsollaPayments, Warning, TEXT("%s: SuccessCallback not found, nothing executed"),
-                       *VA_FUNC_LINE);
+				       *VA_FUNC_LINE);
 			}
 			return;
 		}
@@ -347,8 +348,9 @@ void UXsollaPlayFabSubsystem::StartPurchase_HttpRequestComplete(FHttpRequestPtr 
 	}
 }
 
-void UXsollaPlayFabSubsystem::GetPurchase_HttpRequestComplete(FHttpRequestPtr HttpRequest,
-	FHttpResponsePtr HttpResponse, bool bSucceeded, FOnGetPurchaseSuccess SuccessCallback, FOnAnyError ErrorCallback)
+void UXsollaPlayFabSubsystem::GetPurchase_HttpRequestComplete(
+	FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnGetPurchaseSuccess SuccessCallback,
+	FOnAnyError ErrorCallback)
 {
 	if (HandleRequestError(HttpRequest, HttpResponse, bSucceeded, ErrorCallback))
 	{
@@ -366,13 +368,13 @@ void UXsollaPlayFabSubsystem::GetPurchase_HttpRequestComplete(FHttpRequestPtr Ht
 	{
 		FXsollaGetPurchaseResult Result;
 		const TSharedPtr<FJsonObject> Data = JsonObject->GetObjectField("data");
-		if (FJsonObjectConverter::JsonObjectToUStruct(Data.ToSharedRef(), FXsollaGetPurchaseResult::StaticStruct(),
-                                                      &Result))
+		if (FJsonObjectConverter::JsonObjectToUStruct(
+			Data.ToSharedRef(), FXsollaGetPurchaseResult::StaticStruct(), &Result))
 		{
 			if (!SuccessCallback.ExecuteIfBound(Result))
 			{
 				UE_LOG(LogXsollaPayments, Warning, TEXT("%s: SuccessCallback not found, nothing executed"),
-                       *VA_FUNC_LINE);
+				       *VA_FUNC_LINE);
 			}
 			return;
 		}
@@ -392,9 +394,50 @@ void UXsollaPlayFabSubsystem::GetPurchase_HttpRequestComplete(FHttpRequestPtr Ht
 	}
 }
 
-void UXsollaPlayFabSubsystem::ExecuteCloudScript_HttpRequestComplete(FHttpRequestPtr HttpRequest,
-	FHttpResponsePtr HttpResponse, bool bSucceeded, FOnGetPurchaseSuccess SuccessCallback, FOnAnyError ErrorCallback)
+void UXsollaPlayFabSubsystem::ExecuteCloudScript_HttpRequestComplete(
+	FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded,
+	FOnExecuteCloudScriptSuccess SuccessCallback, FOnAnyError ErrorCallback)
 {
+	if (HandleRequestError(HttpRequest, HttpResponse, bSucceeded, ErrorCallback))
+	{
+		return;
+	}
+
+	const FString ResponseStr = HttpResponse->GetContentAsString();
+	UE_LOG(LogXsollaPayments, Warning, TEXT("%s: Response %s"), *VA_FUNC_LINE, *ResponseStr);
+
+	FString ErrorStr;
+
+	TSharedPtr<FJsonObject> JsonObject;
+	const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(*HttpResponse->GetContentAsString());
+	if (FJsonSerializer::Deserialize(Reader, JsonObject))
+	{
+		FXsollaExecuteCloudScriptResult Result;
+		const TSharedPtr<FJsonObject> Data = JsonObject->GetObjectField("data");
+		if (FJsonObjectConverter::JsonObjectToUStruct(
+			Data.ToSharedRef(), FXsollaExecuteCloudScriptResult::StaticStruct(), &Result))
+		{
+			if (!SuccessCallback.ExecuteIfBound(Result))
+			{
+				UE_LOG(LogXsollaPayments, Warning, TEXT("%s: SuccessCallback not found, nothing executed"),
+				       *VA_FUNC_LINE);
+			}
+			return;
+		}
+
+		ErrorStr = FString::Printf(TEXT("Can't process response json"));
+	}
+	else
+	{
+		ErrorStr = FString::Printf(TEXT("Can't deserialize response json: %s"), *ResponseStr);
+	}
+
+	FXsollaApiErrorWrapper Error;
+	Error.ErrorMessage = ErrorStr;
+	if (!ErrorCallback.ExecuteIfBound(Error))
+	{
+		UE_LOG(LogXsollaPayments, Warning, TEXT("%s: ErrorCallback not found, nothing executed"), *VA_FUNC_LINE);
+	}
 }
 
 void UXsollaPlayFabSubsystem::GetCatalogItems(const FString CatalogVersion, const FOnCatalogReceived& SuccessCallback,
@@ -431,36 +474,48 @@ void UXsollaPlayFabSubsystem::PurchaseItem(
 }
 
 void UXsollaPlayFabSubsystem::StartPurchase(const FXsollaStartPurchaseRequest Request,
-	const FOnStartPurchaseSuccess& SuccessCallback, const FOnAnyError& ErrorCallback)
+                                            const FOnStartPurchaseSuccess& SuccessCallback,
+                                            const FOnAnyError& ErrorCallback)
 {
 	FString Content;
 	FJsonObjectConverter::UStructToJsonObjectString(Request, Content);
 
 	TSharedRef<IHttpRequest> HttpRequest = UXsollaPaymentsLibrary::CreateHttpRequest(
-        StartPurchaseEndpoint, EXsollaLoginRequestVerb::POST, Content, LoginData.SessionTicket);
+		StartPurchaseEndpoint, EXsollaLoginRequestVerb::POST, Content, LoginData.SessionTicket);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
-        this, &UXsollaPlayFabSubsystem::StartPurchase_HttpRequestComplete,
-        SuccessCallback, ErrorCallback);
+		this, &UXsollaPlayFabSubsystem::StartPurchase_HttpRequestComplete,
+		SuccessCallback, ErrorCallback);
 	HttpRequest->ProcessRequest();
 }
 
 void UXsollaPlayFabSubsystem::GetPurchase(const FXsollaGetPurchaseRequest Request,
-	const FOnGetPurchaseSuccess& SuccessCallback, const FOnAnyError& ErrorCallback)
+                                          const FOnGetPurchaseSuccess& SuccessCallback,
+                                          const FOnAnyError& ErrorCallback)
 {
 	FString Content;
 	FJsonObjectConverter::UStructToJsonObjectString(Request, Content);
 
 	TSharedRef<IHttpRequest> HttpRequest = UXsollaPaymentsLibrary::CreateHttpRequest(
-        GetPurchaseEndpoint, EXsollaLoginRequestVerb::POST, Content, LoginData.SessionTicket);
+		GetPurchaseEndpoint, EXsollaLoginRequestVerb::POST, Content, LoginData.SessionTicket);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
-        this, &UXsollaPlayFabSubsystem::GetPurchase_HttpRequestComplete,
-        SuccessCallback, ErrorCallback);
+		this, &UXsollaPlayFabSubsystem::GetPurchase_HttpRequestComplete,
+		SuccessCallback, ErrorCallback);
 	HttpRequest->ProcessRequest();
 }
 
 void UXsollaPlayFabSubsystem::ExecuteCloudScript(const FXsollaExecuteCloudScriptRequest Request,
-	const FOnExecuteCloudScriptSuccess& SuccessCallback, const FOnAnyError& ErrorCallback)
+                                                 const FOnExecuteCloudScriptSuccess& SuccessCallback,
+                                                 const FOnAnyError& ErrorCallback)
 {
+	FString Content;
+	FJsonObjectConverter::UStructToJsonObjectString(Request, Content);
+
+	TSharedRef<IHttpRequest> HttpRequest = UXsollaPaymentsLibrary::CreateHttpRequest(
+		ExecuteCloudScriptEndpoint, EXsollaLoginRequestVerb::POST, Content, LoginData.SessionTicket);
+	HttpRequest->OnProcessRequestComplete().BindUObject(
+		this, &UXsollaPlayFabSubsystem::ExecuteCloudScript_HttpRequestComplete,
+		SuccessCallback, ErrorCallback);
+	HttpRequest->ProcessRequest();
 }
 
 void UXsollaPlayFabSubsystem::LoginWithPlayFab_HttpRequestComplete(FHttpRequestPtr HttpRequest,

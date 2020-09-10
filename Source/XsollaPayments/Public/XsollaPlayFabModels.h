@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2020 Xsolla Inc. All Rights Reserved.
 
 #pragma once
 
@@ -686,7 +686,7 @@ USTRUCT(BlueprintType)
 struct XSOLLAPAYMENTS_API FXsollaPurchaseItemResult
 {
 	GENERATED_BODY()
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|Shop")
 	TArray<FXsollaItemInstance> Items;
 };
@@ -859,19 +859,12 @@ struct XSOLLAPAYMENTS_API FXsollaGetPurchaseResult
 	FString TransactionStatus;
 };
 
-USTRUCT(BlueprintType)
-struct XSOLLAPAYMENTS_API FXsollaCloudScriptRevisionOption
+UENUM(BlueprintType)
+enum class EXsollaCloudScriptRevisionOption : uint8
 {
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|CloudScript")
-	FString Latest;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|CloudScript")
-	FString Live;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|CloudScript")
-	FString Specific;
+	Latest,
+	Live,
+	Specific
 };
 
 /** Struct for PlayFab ABI functions */
@@ -900,7 +893,7 @@ struct XSOLLAPAYMENTS_API FXsollaExecuteCloudScriptRequest
 	 *  The default value is 'Specific', if the SpecificRevision parameter is specified, otherwise it is 'Live'.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|CloudScript")
-	FXsollaCloudScriptRevisionOption RevisionSelection;
+	EXsollaCloudScriptRevisionOption RevisionSelection;
 
 	/** The specific revision to execute, when RevisionSelection is set to 'Specific' */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|CloudScript")
@@ -960,13 +953,13 @@ struct XSOLLAPAYMENTS_API FXsollaExecuteCloudScriptResult
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|CloudScript")
 	int32 ExecutionTimeSeconds;
 
-	/** The name of the function that executed */ 
+	/** The name of the function that executed */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|CloudScript")
 	FString FunctionName;
 
 	/** The object returned from the CloudScript function, if any */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|CloudScript")
-	UObject* FunctionResult;
+	TMap<FString, FString> FunctionResult;
 
 	/** Flag indicating if the FunctionResult was too large and was subsequently dropped from this event.
 	 *  This only occurs if the total event size is larger than 350KB.
