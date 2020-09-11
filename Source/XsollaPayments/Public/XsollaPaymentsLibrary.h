@@ -3,15 +3,8 @@
 #pragma once
 
 #include "XsollaPaymentsSettings.h"
-#include "Interfaces/IHttpRequest.h"
-
 #include "Kismet/BlueprintFunctionLibrary.h"
-
 #include "XsollaPaymentsLibrary.generated.h"
-
-struct FXsollaError;
-class IHttpRequest;
-class UDataTable;
 
 /** Type of Payments SDK integration */
 UENUM(BlueprintType)
@@ -55,7 +48,4 @@ public:
     /** Get extra data for Payments SDK analytics */
     UFUNCTION(BlueprintPure, Category = "Xsolla | Payments")
     static FString GetPaymentsSdkTag(EXsollaPaymentsIntegration integrationType);
-
-    /** Create http request and add PlayFab meta */
-    static TSharedRef<IHttpRequest> CreateHttpRequest(const FString& Url, const EXsollaLoginRequestVerb Verb = EXsollaLoginRequestVerb::GET, const FString& Content = FString(), const FString& AuthToken = FString());
 };

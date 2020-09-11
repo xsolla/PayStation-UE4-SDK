@@ -42,6 +42,7 @@ public:
 	/** Getter for internal settings object to support runtime configuration changes */
 	UXsollaPaymentsSettings* GetSettings() const;
 
+	/** Get TitleId of the project */
 	FString GetTitleId() const;
 
 private:

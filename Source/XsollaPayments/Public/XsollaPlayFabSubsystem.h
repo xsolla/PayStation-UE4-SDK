@@ -5,15 +5,14 @@
 #include "CoreMinimal.h"
 
 
-#include "XsollaPlayFabModels.h"
+#include "XsollaPlayFabDataModel.h"
 #include "Interfaces/IHttpRequest.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "XsollaPaymentsLibrary.h"
 #include "XsollaPlayFabSubsystem.generated.h"
 
-struct FXsollaClientLoginRequest;
-struct FXsollaBaseModel;
 /**
- * 
+ *  Class wrapper for working with PlayFab API
  */
 UCLASS()
 class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
@@ -21,7 +20,7 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 	// Delegates
-	DECLARE_DYNAMIC_DELEGATE_OneParam(FOnLoginSuccess, FXsollaClientLoginResult, Result);
+	DECLARE_DYNAMIC_DELEGATE_OneParam(FOnLoginSuccess, FXsollaLoginResult, Result);
 
 	DECLARE_DYNAMIC_DELEGATE_OneParam(FOnRegisterSuccess, FXsollaRegisterUserResult, Result);
 
@@ -52,9 +51,14 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	static const FString GetPurchaseEndpoint;
 	static const FString ExecuteCloudScriptEndpoint;
 
-	static FXsollaClientLoginResult LoginData;
+	static FXsollaLoginResult LoginData;
 
 	// Helpers
+
+	/** Create http request and add PlayFab meta */
+	TSharedRef<IHttpRequest> CreateHttpRequest(
+		const FString& Url, const EXsollaLoginRequestVerb Verb = EXsollaLoginRequestVerb::GET,
+		const FString& Content = FString(), const FString& AuthToken = FString());
 
 	bool HandleRequestError(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded,
 	                        FOnAnyError ErrorCallback);
@@ -67,16 +71,16 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	* new accounts via the CreateAccountFlag. Username/Password credentials may be used to create accounts via
 	* RegisterPlayFabUser, or added to existing accounts using AddUsernamePassword.
 	*/
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|Login", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Login", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"
 	))
-	void LoginWithPlayFab(const FXsollaClientLoginRequest Request, const FOnLoginSuccess& SuccessCallback,
+	void LoginWithPlayFab(const FXsollaLoginRequest Request, const FOnLoginSuccess& SuccessCallback,
 	                      const FOnAnyError& ErrorCallback);
 
 	/**
 	 * Registers a new Playfab user account, returning a session identifier that can subsequently be used for API calls which require an authenticated user.
 	 * You must supply either a username or an email address.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|Register", meta = (AutoCreateRefTerm =
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Register", meta = (AutoCreateRefTerm =
 		"SuccessCallback, ErrorCallback"))
 	void RegisterPlayFabUser(const FXsollaRegisterRequest Request, const FOnRegisterSuccess& SuccessCallback,
 	                         const FOnAnyError& ErrorCallback);
@@ -84,13 +88,13 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	/** Forces an email to be sent to the registered email address for the user's account, with a link allowing the user to change the password.
 	 *  If an account recovery email template ID is provided, an email using the custom email template will be used.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|Recovery", meta = (AutoCreateRefTerm =
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Recovery", meta = (AutoCreateRefTerm =
 		"SuccessCallback, ErrorCallback"))
 	void SendAccountRecoveryEmail(const FXsollaRecoveryEmailRequest Request,
 	                              const FOnRecoveryEmailSuccess& SuccessCallback, const FOnAnyError& ErrorCallback);
 
 	/** Retrieves the user's current inventory of virtual goods */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|Shop", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback")
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback")
 	)
 	void GetUserInventory(UObject* CustomTags, const FOnInventoryReceived& SuccessCallback,
 	                      const FOnAnyError& ErrorCallback);
@@ -100,7 +104,7 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	 * @param SuccessCallback - Callback which will execute after success
 	 * @param ErrorCallback - Callback which will execute if any errors happen
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|Shop",
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop",
 		meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
 	void GetCatalogItems(const FString CatalogVersion, const FOnCatalogReceived& SuccessCallback,
 	                     const FOnAnyError& ErrorCallback);
@@ -109,13 +113,13 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	 *  as well as what the client believes the price to be.
 	 *  This lets the server fail the purchase if the price has changed.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|Shop",
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop",
 		meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
 	void PurchaseItem(const FXsollaPurchaseItemRequest Request, const FOnPurchaseItemSuccess& SuccessCallback,
 	                  const FOnAnyError& ErrorCallback);
 
 	/** Creates an order for a list of items from the title catalog */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|Shop",
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop",
 		meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
 	void StartPurchase(const FXsollaStartPurchaseRequest Request, const FOnStartPurchaseSuccess& SuccessCallback,
 	                   const FOnAnyError& ErrorCallback);
@@ -123,34 +127,39 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	/** Retrieves a purchase along with its current PlayFab status.
 	 *  Returns inventory items from the purchase that are still active.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|Shop",
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop",
 		meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
 	void GetPurchase(const FXsollaGetPurchaseRequest Request, const FOnGetPurchaseSuccess& SuccessCallback,
 	                 const FOnAnyError& ErrorCallback);
 
 	/** Executes a CloudScript function, with the 'currentPlayerId' set to the PlayFab ID of the authenticated player. */
-	UFUNCTION(BlueprintCallable, Category = "Xsolla|Shop",
+	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop",
 		meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
-	void ExecuteCloudScript(const FXsollaExecuteCloudScriptRequest Request, const FOnExecuteCloudScriptSuccess& SuccessCallback,
-	                 const FOnAnyError& ErrorCallback);
+	void ExecuteCloudScript(const FXsollaExecuteCloudScriptRequest Request,
+	                        const FOnExecuteCloudScriptSuccess& SuccessCallback,
+	                        const FOnAnyError& ErrorCallback);
 
 	// Completes
 
 	void LoginWithPlayFab_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse,
 	                                          bool bSucceeded, FOnLoginSuccess SuccessCallback,
 	                                          FOnAnyError ErrorCallback);
-	void GetCatalogItems_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse,
-	                                         bool bSucceeded, FOnCatalogReceived SuccessCallback,
-	                                         FOnAnyError ErrorCallback);
+
 	void RegisterPlayFabUser_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse,
 	                                             bool bSucceeded, FOnRegisterSuccess SuccessCallback,
 	                                             FOnAnyError ErrorCallback);
+
 	void SendAccountRecoveryEmail_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse,
 	                                                  bool bSucceeded, FOnRecoveryEmailSuccess SuccessCallback,
 	                                                  FOnAnyError ErrorCallback);
+
 	void GetUserInventory_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse,
 	                                          bool bSucceeded, FOnInventoryReceived SuccessCallback,
 	                                          FOnAnyError ErrorCallback);
+
+	void GetCatalogItems_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse,
+	                                         bool bSucceeded, FOnCatalogReceived SuccessCallback,
+	                                         FOnAnyError ErrorCallback);
 
 	void PurchaseItem_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse,
 	                                      bool bSucceeded, FOnPurchaseItemSuccess SuccessCallback,
@@ -165,6 +174,6 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	                                     FOnAnyError ErrorCallback);
 
 	void ExecuteCloudScript_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse,
-                                         bool bSucceeded, FOnExecuteCloudScriptSuccess SuccessCallback,
-                                         FOnAnyError ErrorCallback);
+	                                            bool bSucceeded, FOnExecuteCloudScriptSuccess SuccessCallback,
+	                                            FOnAnyError ErrorCallback);
 };
