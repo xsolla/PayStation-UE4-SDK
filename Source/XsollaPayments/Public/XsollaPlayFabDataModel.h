@@ -863,6 +863,30 @@ enum class EXsollaCloudScriptRevisionOption : uint8
 	Specific
 };
 
+USTRUCT(BlueprintType)
+struct XSOLLAPAYMENTS_API FXsollaCreatePaystationTokenParameters
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|CloudScript")
+	FString Sku;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|CloudScript")
+	float Amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|CloudScript")
+	FString OrderId;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|CloudScript")
+	FString Theme;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|CloudScript")
+	FString SdkTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|CloudScript")
+	bool Sandbox;
+};
+
 /** Struct for PlayFab ABI functions */
 USTRUCT(BlueprintType)
 struct XSOLLAPAYMENTS_API FXsollaExecuteCloudScriptRequest
@@ -875,7 +899,7 @@ struct XSOLLAPAYMENTS_API FXsollaExecuteCloudScriptRequest
 
 	/** Object that is passed in to the function as the first argument */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|CloudScript")
-	UObject* FunctionParameter;
+	FXsollaCreatePaystationTokenParameters FunctionParameter;
 
 	/** Generate a 'player_executed_cloudscript' PlayStream event containing the results of the function execution and
 	 *  other contextual information. This event will show up in the PlayStream debugger console for the player
@@ -991,4 +1015,36 @@ struct XSOLLAPAYMENTS_API FXsollaExecuteCloudScriptResult
 	/** The revision of the CloudScript that executed */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|CloudScript")
 	int32 Revision;
+};
+
+USTRUCT(BlueprintType)
+struct XSOLLAPAYMENTS_API FXsollaConsumeItemRequest
+{
+	GENERATED_BODY()
+
+	/** Unique PlayFab assigned ID for a specific character owned by a user */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Shop")
+	FString CharacterId;
+
+	/** Number of uses to consume from the item. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Shop")
+	int32 ConsumeCount;
+
+	/** Unique instance identifier of the item to be consumed. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Shop")
+	FString ItemInstanceId;
+};
+
+USTRUCT(BlueprintType)
+struct XSOLLAPAYMENTS_API FXsollaConsumeItemResult
+{
+	GENERATED_BODY()
+
+	/** Unique instance identifier of the item with uses consumed. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Shop")
+	FString ItemInstanceId;
+
+	/** Number of uses remaining on the item. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Shop")
+	int32 RemainingUses;
 };
