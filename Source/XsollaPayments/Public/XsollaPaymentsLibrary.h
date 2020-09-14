@@ -4,6 +4,7 @@
 
 #include "XsollaPaymentsSettings.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "XsollaPaymentsImageLoader.h"
 #include "XsollaPaymentsLibrary.generated.h"
 
 /** Type of Payments SDK integration */
