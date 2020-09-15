@@ -15,16 +15,6 @@ enum class EXsollaPaymentsIntegration : uint8
     PlayFab
 };
 
-UENUM(BlueprintType)
-enum class EXsollaLoginRequestVerb : uint8
-{
-    GET,
-    POST,
-    PUT,
-    DELETE,
-    PATCH
-};
-
 UCLASS()
 class XSOLLAPAYMENTS_API UXsollaPaymentsLibrary : public UBlueprintFunctionLibrary
 {
