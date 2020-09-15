@@ -75,6 +75,7 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	bool HandleRequestError(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded,
 	                        FOnAnyError ErrorCallback);
 
+public:
 	// Methods
 
 	/**
@@ -159,6 +160,7 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	                        const FOnExecuteCloudScriptSuccess& SuccessCallback,
 	                        const FOnAnyError& ErrorCallback);
 
+private:
 	// Completes
 
 	void LoginWithPlayFab_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse,

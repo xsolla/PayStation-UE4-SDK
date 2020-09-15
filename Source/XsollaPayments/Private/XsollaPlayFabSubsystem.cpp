@@ -204,19 +204,12 @@ void UXsollaPlayFabSubsystem::SendAccountRecoveryEmail(
 void UXsollaPlayFabSubsystem::GetUserInventory(
 	const FOnInventoryReceived& SuccessCallback, const FOnAnyError& ErrorCallback)
 {
-	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
-
-	JsonObject->SetStringField(TEXT("Test"), "Test");
-
-	FString Content;
-	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Content);
-	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
-
 	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
-		UserInventoryEndpoint, EXsollaPlayFabRequestVerb::POST, Content, LoginData.SessionTicket);
+		UserInventoryEndpoint, EXsollaPlayFabRequestVerb::POST, "", LoginData.SessionTicket);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::GetUserInventory_HttpRequestComplete,
 		SuccessCallback, ErrorCallback);
+	HttpRequest->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
 	HttpRequest->ProcessRequest();
 }
 
