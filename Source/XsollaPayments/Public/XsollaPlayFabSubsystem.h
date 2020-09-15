@@ -8,8 +8,17 @@
 #include "XsollaPlayFabDataModel.h"
 #include "Interfaces/IHttpRequest.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "XsollaPaymentsLibrary.h"
 #include "XsollaPlayFabSubsystem.generated.h"
+
+UENUM(BlueprintType)
+enum class EXsollaPlayFabRequestVerb : uint8
+{
+	GET,
+    POST,
+    PUT,
+    DELETE,
+    PATCH
+};
 
 /**
  *  Class wrapper for working with PlayFab API
@@ -58,9 +67,9 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 
 	// Helpers
 
-	/** Create http request and add PlayFab meta */
+	/** Create http request */
 	TSharedRef<IHttpRequest> CreateHttpRequest(
-		const FString& Url, const EXsollaLoginRequestVerb Verb = EXsollaLoginRequestVerb::GET,
+		const FString& Url, const EXsollaPlayFabRequestVerb Verb = EXsollaPlayFabRequestVerb::GET,
 		const FString& Content = FString(), const FString& AuthToken = FString());
 
 	bool HandleRequestError(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded,
@@ -101,7 +110,7 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop", meta = (AutoCreateRefTerm =
 			"SuccessCallback, ErrorCallback")
 	)
-	void GetUserInventory(UObject* CustomTags, const FOnInventoryReceived& SuccessCallback,
+	void GetUserInventory(const FOnInventoryReceived& SuccessCallback,
 	                      const FOnAnyError& ErrorCallback);
 
 	/** Retrieves the specified version of the title's catalog of virtual goods, including all defined properties

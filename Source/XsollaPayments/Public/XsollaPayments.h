@@ -20,7 +20,7 @@ public:
 
 	/**
 	 * Singleton-like access to this module's interface. This is just for convenience!
-	 * Beware of calling this during the shutdown phase, though. Your module might have beed unloaded already.
+	 * Beware of calling this during the shutdown phase, though. Your module might have been unloaded already.
 	 *
 	 * @return Returns singleton instance, loading the module on demand if needed
 	 */
@@ -42,11 +42,8 @@ public:
 	/** Getter for internal settings object to support runtime configuration changes */
 	UXsollaPaymentsSettings* GetSettings() const;
 
-	/** Get TitleId of the project */
-	FString GetTitleId() const;
-
 private:
 
 	/** Module settings */
-	UXsollaPaymentsSettings* XsollaPaymentsSettings;
+	UXsollaPaymentsSettings* XsollaPaymentsSettings = nullptr;
 };

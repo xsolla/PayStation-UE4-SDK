@@ -46,7 +46,11 @@ public:
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla Payments Settings | Simplified integration")
 	int32 ProjectID;
 
+	UFUNCTION(BlueprintCallable, Category = "Xsolla Payments Settings|PlayFab")
+	FString GetTitleID() const;
+
+private:
 	/** Title ID from your PlayFab Developer Account. Required if PlayFab integration flow is prefered */
-	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla Payments Settings | PlayFab")
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla Payments Settings | PlayFab", meta=(AllowPrivateAccess=true))
 	FString TitleID;
 };

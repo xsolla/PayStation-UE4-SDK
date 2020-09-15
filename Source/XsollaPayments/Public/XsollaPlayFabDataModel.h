@@ -6,9 +6,6 @@
 #include "XsollaPaymentsSettings.h"
 #include "XsollaPlayFabDataModel.generated.h"
 
-
-// -----------------------Requests--------------------------
-
 /**
 * Equal of FClientLoginWithPlayFabRequest.
 * 
@@ -77,60 +74,6 @@ USTRUCT(BlueprintType)
 struct XSOLLAPAYMENTS_API FXsollaPlayerCombinedInfoResultPayload
 {
 	GENERATED_BODY()
-
-	// /** Account information for the user. This is always retrieved. */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// FXsollaUserAccountInfo AccountInfo;
-	//
-	// /** Inventories for each character for the user */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// TArray<FXsollaCharacterInventory> CharacterInventories;
-	//
-	// /** List of characters for the user */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// TArray<FXsollaCharacterResult> CharacterList;
-	//
-	// /** The profile of the players. This profile is not guaranteed to be up-to-date.
-	//  *  For a new player, this profile will not exist.
-	//  */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// FXsollaPlayerProfileModel PlayerProfile;
-	//
-	// /** List of statistics for this player. */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// TArray<FXsollaStatisticValue> PlayerStatistics;
-	//
-	// /** Title data for this title. */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// UObject* TitleData;
-	//
-	// /** User specific custom data. */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// FXsollaUserDataRecord UserData;
-	//
-	// /** The version of the UserData that was returned. */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// int32 UserDataVersion;
-	//
-	// /** Array of inventory items in the user's current inventory. */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// TArray<FXsollaItemInstance> UserInventory;
-	//
-	// /** User specific read-only data. */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// FXsollaUserDataRecord UserReadOnlyData;
-	//
-	// /** The version of the Read-Only UserData that was returned. */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// int32 UserReadOnlyDataVersion;
-	//
-	// /** Dictionary of virtual currency balance(s) belonging to the user. */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// UObject* UserVirtualCurrency;
-	//
-	// /** Dictionary of remaining times and timestamps for virtual currencies. */
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Login")
-	// FXsollaVirtualCurrencyRechargeTime UserVirtualCurrencyRechargeTimes;
 };
 
 USTRUCT(BlueprintType)
@@ -406,10 +349,6 @@ struct XSOLLAPAYMENTS_API FXsollaClientRegisterUserRequest
 {
 	GENERATED_BODY()
 
-	/** The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.). */
-	UPROPERTY()
-	TMap<FString, FString> CustomTags;
-
 	/** An optional parameter for setting the display name for this title (3-25 characters). */
 	UPROPERTY()
 	FString DisplayName;
@@ -639,7 +578,7 @@ struct XSOLLAPAYMENTS_API FXsollaUserInventoryResult
 	TMap<FString, float> VirtualCurrency;
 
 	/** Array of remaining times and timestamps for virtual currencies. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Recovery")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Shop")
 	FXsollaVirtualCurrencyRechargeTime VirtualCurrencyRechargeTimes;
 };
 
@@ -656,10 +595,6 @@ struct XSOLLAPAYMENTS_API FXsollaPurchaseItemRequest
 	/** Unique PlayFab assigned ID for a specific character owned by a user */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Shop")
 	FString CharacterId;
-
-	/** The optional custom tags associated with the request (e.g. build number, external trace identifiers, etc.). */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Shop")
-	TMap<FString, FString> CustomTags;
 
 	/** Unique identifier of the item to purchase. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Xsolla|PlayFab Wrapper|Shop")

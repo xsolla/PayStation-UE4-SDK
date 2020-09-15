@@ -25,8 +25,6 @@ enum class EXsollaLoginRequestVerb : uint8
     PATCH
 };
 
-
-
 UCLASS()
 class XSOLLAPAYMENTS_API UXsollaPaymentsLibrary : public UBlueprintFunctionLibrary
 {
