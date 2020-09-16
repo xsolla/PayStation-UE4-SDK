@@ -11,3 +11,8 @@ UXsollaPaymentsSettings::UXsollaPaymentsSettings(const FObjectInitializer& Objec
 	PaymentInterfaceTheme = EXsollaPaymentsUiTheme::Dark;
 	ProjectID = 68789;
 }
+
+FString UXsollaPaymentsSettings::GetTitleID() const
+{
+	return TitleID;
+}

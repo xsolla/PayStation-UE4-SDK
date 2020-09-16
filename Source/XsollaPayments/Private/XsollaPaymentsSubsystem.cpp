@@ -2,12 +2,18 @@
 
 #include "XsollaPaymentsSubsystem.h"
 
+
+
+#include "HttpModule.h"
+#include "JsonObjectConverter.h"
 #include "XsollaPayments.h"
 #include "XsollaPaymentsDefines.h"
 #include "XsollaPaymentsSettings.h"
 #include "XsollaPaymentsImageLoader.h"
 
 #include "Engine/Engine.h"
+#include "GenericPlatform/GenericPlatformHttp.h"
+#include "Interfaces/IHttpResponse.h"
 #include "Modules/ModuleManager.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include "UObject/ConstructorHelpers.h"

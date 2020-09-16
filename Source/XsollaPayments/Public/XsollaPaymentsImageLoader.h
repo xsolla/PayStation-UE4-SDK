@@ -8,8 +8,8 @@
 
 #include "XsollaPaymentsImageLoader.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FOnImageLoaded, FSlateBrush, ImageBrush);
-DECLARE_DYNAMIC_DELEGATE(FOnImageLoadFailed);
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FOnImageLoaded, FSlateBrush, ImageBrush, FString, Url);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnImageLoadFailed, FString, Url);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnRequestCompleted, bool);
 
 UCLASS()

@@ -2,11 +2,8 @@
 
 #include "XsollaPaymentsLibrary.h"
 #include "XsollaPaymentsDefines.h"
-
-#include "Dom/JsonObject.h"
 #include "Runtime/Launch/Resources/Version.h"
-#include "JsonObjectConverter.h"
-#include "Engine/DataTable.h"
+#include "XsollaPayments.h"
 
 UXsollaPaymentsSettings* UXsollaPaymentsLibrary::GetPaymentsSettings()
 {
@@ -64,4 +61,3 @@ FString UXsollaPaymentsLibrary::GetPaymentsSdkTag(EXsollaPaymentsIntegration int
 	FString sdkTag = FString::Printf(TEXT("SDK-payments_ver-%s_integr-%s_engine-%s_enginever-%s"), XSOLLA_PAYMENTS_VERSION, *integrationTypeStr, TEXT("UE4"), ENGINE_VERSION_STRING);
 	return sdkTag;
 }
-
