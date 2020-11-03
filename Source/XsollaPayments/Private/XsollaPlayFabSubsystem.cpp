@@ -88,7 +88,7 @@ bool UXsollaPlayFabSubsystem::HandleRequestError(
 		return false;
 	}
 
-	if (HttpResponse.IsValid())
+	if (HttpResponse == nullptr)
 	{
 		FXsollaApiErrorWrapper Result;
 		Result.ErrorMessage = TEXT("HttpResponse is not valid");
