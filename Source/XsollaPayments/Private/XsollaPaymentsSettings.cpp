@@ -10,6 +10,7 @@ UXsollaPaymentsSettings::UXsollaPaymentsSettings(const FObjectInitializer& Objec
 	UsePlatformBrowser = false;
 	PaymentInterfaceTheme = EXsollaPaymentsUiTheme::Dark;
 	ProjectID = 68789;
+	TitleID = "2915B";
 }
 
 FString UXsollaPaymentsSettings::GetTitleID() const
