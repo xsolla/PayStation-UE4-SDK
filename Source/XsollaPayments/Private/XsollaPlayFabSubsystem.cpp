@@ -88,6 +88,15 @@ bool UXsollaPlayFabSubsystem::HandleRequestError(
 		return false;
 	}
 
+	if (HttpResponse == nullptr)
+	{
+		FXsollaApiErrorWrapper Result;
+		Result.ErrorMessage = TEXT("HttpResponse is not valid");
+		UE_LOG(LogXsollaPayments, Warning, TEXT("%s: HttpResponse is not valid"), *VA_FUNC_LINE);
+		ErrorCallback.ExecuteIfBound(Result);
+		return true;
+	}
+
 	FString ErrorStr;
 
 	const FString ResponseStr = HttpResponse->GetContentAsString();
