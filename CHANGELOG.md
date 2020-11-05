@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.2] - 2020-11-05 
+
+### Added
+- Custom SDK methods for PlayFab REST API.
+
+
+## [1.0.1] - 2020-08-05 
+
+### Fixed
+- Minor changes.
+
+
 ## [1.0.0] - 2020-07-06 
 
 ### Added 
