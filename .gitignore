@@ -75,3 +75,7 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Rider/Resharper cache
+/.idea/
+/_ReSharper.Caches/
