@@ -46,8 +46,8 @@ FString UXsollaPaymentsLibrary::GetPaymentsSdkTag(EXsollaPaymentsIntegration int
 
 	switch (integrationType)
 	{
-	case EXsollaPaymentsIntegration::Simplified:
-		integrationTypeStr = TEXT("simplified");
+	case EXsollaPaymentsIntegration::Serverless:
+		integrationTypeStr = TEXT("serverless");
 		break;
 
 	case EXsollaPaymentsIntegration::PlayFab:
@@ -55,7 +55,7 @@ FString UXsollaPaymentsLibrary::GetPaymentsSdkTag(EXsollaPaymentsIntegration int
 		break;
 
 	default:
-		integrationTypeStr = TEXT("simplified");
+		integrationTypeStr = TEXT("serverless");
 	}
 
 	FString sdkTag = FString::Printf(TEXT("SDK-payments_ver-%s_integr-%s_engine-%s_enginever-%s"), XSOLLA_PAYMENTS_VERSION, *integrationTypeStr, TEXT("UE4"), ENGINE_VERSION_STRING);
