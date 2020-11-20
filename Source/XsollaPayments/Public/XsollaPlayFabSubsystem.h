@@ -21,7 +21,7 @@ enum class EXsollaPlayFabRequestVerb : uint8
 };
 
 /**
- *  Class wrapper for working with PlayFab API
+ *  Class wrapper for working with PlayFab API.
  */
 UCLASS()
 class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
@@ -80,7 +80,7 @@ public:
 
 	/**
 	* Signs the user into the PlayFab account, returning a session identifier that can subsequently be used for API calls
-	* which require an authenticated user. Unlike most other login API calls, LoginWithPlayFab does not permit the creation of
+	* which require an authenticated user. Unlike most other login API calls, LoginWithPlayFab doesn't permit the creation of
 	* new accounts via the CreateAccountFlag. Username/Password credentials may be used to create accounts via
 	* RegisterPlayFabUser, or added to existing accounts using AddUsernamePassword.
 	*/
@@ -99,7 +99,7 @@ public:
 	void RegisterPlayFabUser(const FXsollaRegisterRequest Request, const FOnRegisterSuccess& SuccessCallback,
 	                         const FOnAnyError& ErrorCallback);
 
-	/** Forces an email to be sent to the registered email address for the user's account, with a link allowing the user to change the password.
+	/** Forces sending of the email to the registered email address for the user's account with a link allowing the user to change the password.
 	 *  If an account recovery email template ID is provided, an email using the custom email template will be used.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Recovery", meta = (AutoCreateRefTerm =
@@ -107,25 +107,25 @@ public:
 	void SendAccountRecoveryEmail(const FXsollaRecoveryEmailRequest Request,
 	                              const FOnRecoveryEmailSuccess& SuccessCallback, const FOnAnyError& ErrorCallback);
 
-	/** Retrieves the user's current inventory of virtual goods */
+	/** Retrieves the user's current inventory of virtual goods. */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop", meta = (AutoCreateRefTerm =
 			"SuccessCallback, ErrorCallback")
 	)
 	void GetUserInventory(const FOnInventoryReceived& SuccessCallback,
 	                      const FOnAnyError& ErrorCallback);
 
-	/** Retrieves the specified version of the title's catalog of virtual goods, including all defined properties
-	 * @param CatalogVersion - Which catalog is being requested. Iff null, uses the default catalog
-	 * @param SuccessCallback - Callback which will execute after success
-	 * @param ErrorCallback - Callback which will execute if any errors happen
+	/** Retrieves the specified version of the title's catalog of virtual goods including all defined properties.
+	 * @param CatalogVersion - Requested catalog. If null, uses the default catalog.
+	 * @param SuccessCallback - Callback which will be executed after success.
+	 * @param ErrorCallback - Callback which will be executed if an error occurs.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop",
 		meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
 	void GetCatalogItems(const FString CatalogVersion, const FOnCatalogReceived& SuccessCallback,
 	                     const FOnAnyError& ErrorCallback);
 
-	/** Buys a single item with virtual currency. You must specify both the virtual currency to use to purchase,
-	 *  as well as what the client believes the price to be.
+	/** Buys a single item with virtual currency. You must specify both the virtual currency that is used for the purchase and
+	 *  the price expected by the player.
 	 *  This lets the server fail the purchase if the price has changed.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop",
@@ -133,7 +133,7 @@ public:
 	void PurchaseItem(const FXsollaPurchaseItemRequest Request, const FOnPurchaseItemSuccess& SuccessCallback,
 	                  const FOnAnyError& ErrorCallback);
 
-	/** Creates an order for a list of items from the title catalog */
+	/** Creates an order for a list of items from the title catalog. */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop",
 		meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
 	void StartPurchase(const FXsollaStartPurchaseRequest Request, const FOnStartPurchaseSuccess& SuccessCallback,
@@ -147,7 +147,7 @@ public:
 	void GetPurchase(const FXsollaGetPurchaseRequest Request, const FOnGetPurchaseSuccess& SuccessCallback,
 	                 const FOnAnyError& ErrorCallback);
 
-	/** Consume uses of a consumable item. When all uses are consumed, it will be removed from the player's inventory. */
+	/** Consumes uses of a consumable item. When all uses are consumed, it will be removed from the player's inventory. */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|PlayFab Wrapper|Shop",
 		meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
 	void ConsumeItem(const FXsollaConsumeItemRequest Request, const FOnConsumeItemSuccess& SuccessCallback,
