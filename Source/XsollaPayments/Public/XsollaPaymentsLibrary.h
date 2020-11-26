@@ -11,7 +11,7 @@
 UENUM(BlueprintType)
 enum class EXsollaPaymentsIntegration : uint8
 {
-    Simplified,
+    Serverless,
     PlayFab
 };
 

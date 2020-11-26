@@ -42,8 +42,8 @@ public:
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla Payments Settings")
 	EXsollaPaymentsUiTheme PaymentInterfaceTheme;
 
-	/** Project ID from your Publisher Account. Required if simplified integration flow is preferred. */
-	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla Payments Settings | Simplified integration")
+	/** Project ID from your Publisher Account. Required if serverless integration flow is preferred. */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Xsolla Payments Settings | Serverless integration")
 	int32 ProjectID;
 
 	UFUNCTION(BlueprintCallable, Category = "Xsolla Payments Settings|PlayFab")

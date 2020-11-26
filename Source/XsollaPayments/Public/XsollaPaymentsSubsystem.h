@@ -23,51 +23,51 @@ class XSOLLAPAYMENTS_API UXsollaPaymentsSubsystem : public UGameInstanceSubsyste
 public:
 	UXsollaPaymentsSubsystem();
 
-	// Begin USubsystem
+	// Begins USubsystem
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
-	// End USubsystem
+	// Ends USubsystem
 
-	/** Open payment console for provided token */
+	/** Opens the payment console for a provided token. */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments")
 	void LaunchPaymentConsoleWithAccessToken(const FString& AccessToken, UUserWidget*& BrowserWidget);
 
-	/** Open payment console for provided token */
+	/** Opens the payment console for a provided token. */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments")
 	void LaunchPaymentConsoleWithAccessData(FXsollaPaymentsAccessData accessData, UUserWidget*& BrowserWidget);
 
-	/** Get pending payment URL to be opened in browser */
+	/** Gets a pending payment URL to be opened in the browser. */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments")
 	FString GetPendingPaymentsUrl() const;
 
-	/** Check purchase status by its UUID */
+	/** Checks the purchase status by its UUID. */
 	UFUNCTION(BlueprintCallable, Category = "Xsolla|Payments", meta = (AutoCreateRefTerm = "SuccessCallback, ErrorCallback"))
 	void CheckPurchaseStatus(const FString& PurchaseUUID, const FOnCheckPurchaseStatusSuccess& SuccessCallback, const FOnPaymentsError& ErrorCallback);
 
 protected:
-	/** Check whether sandbox is enabled */
+	/** Checks whether sandbox is enabled. */
 	bool IsSandboxEnabled() const;
 
-	/** Open payment console in browser */
+	/** Opens payment console in a browser. */
 	void OpenBrowser(const FString& Url, UUserWidget*& BrowserWidget);
 
 	void CheckPurchaseStatus_HttpRequestComplete(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnCheckPurchaseStatusSuccess SuccessCallback, FOnPaymentsError ErrorCallback);
 
-	/** Return true if error is happened */
+	/** Returns true if the error occurs. */
 	bool HandlePurchaseStatusError(FHttpRequestPtr HttpRequest, FHttpResponsePtr HttpResponse, bool bSucceeded, FOnPaymentsError ErrorCallback);
 
 private:
-	/** Create HTTP request and add Xsolla API meta */
+	/** Creates HTTP request and adds Xsolla API meta. */
 	TSharedRef<IHttpRequest> CreateHttpRequest(const FString& Url) const;
 
 protected:
-	/** Pending Payments URL to be opened in browser */
+	/** Pending Payments URL to be opened in the browser. */
 	FString PengindPaymentsUrl;
 
 	static const FString PaymentEndpoint;
 	static const FString SandboxPaymentEndpoint;
 
-	/** Cached Xsolla Payments Project ID */
+	/** Cached Xsolla Payments Project ID. */
 	int32 ProjectID;
 
 private:
@@ -78,7 +78,7 @@ private:
 	UXsollaPaymentsImageLoader* ImageLoader;
 
 public:
-	/** Async load image from the web
+	/** Async loads image from the web.
 	 *
 	 * @param URL Address of image to be downloaded.
 	 * @param SuccessCallback Callback function called after successful image download.

@@ -64,7 +64,7 @@ struct XSOLLAPAYMENTS_API FXsollaPaymentsPurchaseSettings
 
 	FXsollaPaymentsPurchaseSettings()
 		: project_id(0)
-		, xsolla_product_tag(UXsollaPaymentsLibrary::GetPaymentsSdkTag(EXsollaPaymentsIntegration::Simplified)) {};
+		, xsolla_product_tag(UXsollaPaymentsLibrary::GetPaymentsSdkTag(EXsollaPaymentsIntegration::Serverless)) {};
 };
 
 USTRUCT(BlueprintType)
