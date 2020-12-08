@@ -5,6 +5,7 @@
 #include "Framework/Application/SlateApplication.h"
 #include "IImageWrapper.h"
 #include "IImageWrapperModule.h"
+#include "Interfaces/IHttpRequest.h"
 #include "Misc/SecureHash.h"
 #include "Modules/ModuleManager.h"
 
@@ -44,7 +45,7 @@ void UXsollaPaymentsImageLoader::LoadImage(
 			const FOnRequestCompleted ImageLoadingCompletedDelegate;
 			PendingRequests.Add(ResourceId, ImageLoadingCompletedDelegate);
 
-			TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
+			TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = FHttpModule::Get().CreateRequest();
 
 			HttpRequest->OnProcessRequestComplete().BindUObject(
 				this, &UXsollaPaymentsImageLoader::LoadImage_HttpRequestComplete, SuccessCallback, ErrorCallback);

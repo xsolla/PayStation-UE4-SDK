@@ -23,10 +23,10 @@ const FString UXsollaPlayFabSubsystem::ExecuteCloudScriptEndpoint(TEXT("/Client/
 
 FXsollaLoginResult UXsollaPlayFabSubsystem::LoginData;
 
-TSharedRef<IHttpRequest> UXsollaPlayFabSubsystem::CreateHttpRequest(
+TSharedRef<IHttpRequest, ESPMode::ThreadSafe> UXsollaPlayFabSubsystem::CreateHttpRequest(
 	const FString& Url, const EXsollaPlayFabRequestVerb Verb, const FString& Content, const FString& AuthToken)
 {
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = FHttpModule::Get().CreateRequest();
 
 	HttpRequest->SetURL(
 		FString::Printf(TEXT("https://%s.playfabapi.com%s"),
@@ -155,7 +155,7 @@ void UXsollaPlayFabSubsystem::LoginWithPlayFab(
 	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Content);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(
 		LoginEndpoint, EXsollaPlayFabRequestVerb::POST, Content);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::LoginWithPlayFab_HttpRequestComplete,
@@ -182,7 +182,7 @@ void UXsollaPlayFabSubsystem::RegisterPlayFabUser(
 	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Content);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(
 		RegisterEndpoint, EXsollaPlayFabRequestVerb::POST, Content);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::RegisterPlayFabUser_HttpRequestComplete,
@@ -203,7 +203,7 @@ void UXsollaPlayFabSubsystem::SendAccountRecoveryEmail(
 	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Content);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(
 		RecoveryEmailEndpoint, EXsollaPlayFabRequestVerb::POST, Content);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::SendAccountRecoveryEmail_HttpRequestComplete, SuccessCallback, ErrorCallback);
@@ -213,7 +213,7 @@ void UXsollaPlayFabSubsystem::SendAccountRecoveryEmail(
 void UXsollaPlayFabSubsystem::GetUserInventory(
 	const FOnInventoryReceived& SuccessCallback, const FOnAnyError& ErrorCallback)
 {
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(
 		UserInventoryEndpoint, EXsollaPlayFabRequestVerb::POST, "", LoginData.SessionTicket);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::GetUserInventory_HttpRequestComplete,
@@ -232,7 +232,7 @@ void UXsollaPlayFabSubsystem::GetCatalogItems(
 	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Content);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(
 		CatalogItemsEndpoint, EXsollaPlayFabRequestVerb::POST, Content, LoginData.SessionTicket);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::GetCatalogItems_HttpRequestComplete,
@@ -258,7 +258,7 @@ void UXsollaPlayFabSubsystem::PurchaseItem(
 	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Content);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(
 		PurchaseItemEndpoint, EXsollaPlayFabRequestVerb::POST, Content, LoginData.SessionTicket);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::PurchaseItem_HttpRequestComplete,
@@ -297,7 +297,7 @@ void UXsollaPlayFabSubsystem::StartPurchase(
 	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Content);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(
 		StartPurchaseEndpoint, EXsollaPlayFabRequestVerb::POST, Content, LoginData.SessionTicket);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::StartPurchase_HttpRequestComplete,
@@ -317,7 +317,7 @@ void UXsollaPlayFabSubsystem::GetPurchase(
 	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Content);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(
 		GetPurchaseEndpoint, EXsollaPlayFabRequestVerb::POST, Content, LoginData.SessionTicket);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::GetPurchase_HttpRequestComplete,
@@ -339,7 +339,7 @@ void UXsollaPlayFabSubsystem::ConsumeItem(
 	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Content);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(
 		ConsumeItemEndpoint, EXsollaPlayFabRequestVerb::POST, Content, LoginData.SessionTicket);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::ConsumeItem_HttpRequestComplete,
@@ -371,7 +371,7 @@ void UXsollaPlayFabSubsystem::ExecuteCloudScript(
 	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Content);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(
 		ExecuteCloudScriptEndpoint, EXsollaPlayFabRequestVerb::POST, Content, LoginData.SessionTicket);
 	HttpRequest->OnProcessRequestComplete().BindUObject(
 		this, &UXsollaPlayFabSubsystem::ExecuteCloudScript_HttpRequestComplete,

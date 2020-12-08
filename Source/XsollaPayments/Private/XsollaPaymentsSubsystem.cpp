@@ -89,7 +89,7 @@ void UXsollaPaymentsSubsystem::CheckPurchaseStatus(const FString& PurchaseUUID, 
 {
 	const FString Url = FString::Printf(TEXT("https://api.xsolla.com/merchant/projects/%d/transactions/external/%s/status"), ProjectID, *PurchaseUUID);
 
-	TSharedRef<IHttpRequest> HttpRequest = CreateHttpRequest(Url);
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = CreateHttpRequest(Url);
 	HttpRequest->SetVerb(TEXT("GET"));
 	HttpRequest->OnProcessRequestComplete().BindUObject(this, &UXsollaPaymentsSubsystem::CheckPurchaseStatus_HttpRequestComplete, SuccessCallback, ErrorCallback);
 	HttpRequest->ProcessRequest();
@@ -217,9 +217,9 @@ bool UXsollaPaymentsSubsystem::HandlePurchaseStatusError(FHttpRequestPtr HttpReq
 	return false;
 }
 
-TSharedRef<IHttpRequest> UXsollaPaymentsSubsystem::CreateHttpRequest(const FString& Url) const
+TSharedRef<IHttpRequest, ESPMode::ThreadSafe> UXsollaPaymentsSubsystem::CreateHttpRequest(const FString& Url) const
 {
-	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> HttpRequest = FHttpModule::Get().CreateRequest();
 
 	const FString MetaUrl = FString::Printf(TEXT("%sengine=ue4&engine_v=%s&sdk=Payments&sdk_v=%s"),
 		Url.Contains(TEXT("?")) ? TEXT("&") : TEXT("?"),

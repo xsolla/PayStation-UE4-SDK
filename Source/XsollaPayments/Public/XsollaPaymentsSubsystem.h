@@ -58,7 +58,7 @@ protected:
 
 private:
 	/** Creates HTTP request and adds Xsolla API meta. */
-	TSharedRef<IHttpRequest> CreateHttpRequest(const FString& Url) const;
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> CreateHttpRequest(const FString& Url) const;
 
 protected:
 	/** Pending Payments URL to be opened in the browser. */

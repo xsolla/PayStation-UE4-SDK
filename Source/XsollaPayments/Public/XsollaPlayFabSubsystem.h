@@ -68,7 +68,7 @@ class XSOLLAPAYMENTS_API UXsollaPlayFabSubsystem : public UGameInstanceSubsystem
 	// Helpers
 
 	/** Create http request */
-	TSharedRef<IHttpRequest> CreateHttpRequest(
+	TSharedRef<IHttpRequest, ESPMode::ThreadSafe> CreateHttpRequest(
 		const FString& Url, const EXsollaPlayFabRequestVerb Verb = EXsollaPlayFabRequestVerb::GET,
 		const FString& Content = FString(), const FString& AuthToken = FString());
 
