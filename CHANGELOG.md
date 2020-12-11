@@ -1,10 +1,17 @@
 # Changelog
 
+## [1.0.4] - 2020-12-11 
+
+### Added
+- Support for Unreal Engine version 4.26.
+
+
 ## [1.0.3] - 2020-11-20 
 
 ### Fixed
 - Documentation links.
 - New assets naming.
+
 
 ## [1.0.2] - 2020-11-05 
 
